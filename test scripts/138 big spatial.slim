@@ -1,0 +1,30 @@
+// big spatial.slim : ^Total mutation frequencies: (.*)$
+//
+// A spatial interaction model with a big subpop size
+//
+initialize() {
+	initializeSLiMOptions(dimensionality="xy");
+	initializeMutationRate(1e-7);
+	initializeMutationType("m1", 0.5, "f", 0.0);
+	initializeGenomicElementType("g1", m1, 1.0);
+	initializeGenomicElement(g1, 0, 99999);
+	initializeRecombinationRate(1e-8);
+	initializeInteractionType(1, "xy", reciprocal=T, maxDistance=0.03);
+	i1.setInteractionFunction("n", 3.0, 0.01);
+}
+1 late() {
+	sim.addSubpop("p1", 20000);
+	p1.individuals.setSpatialPosition(p1.pointUniform(p1.individualCount));
+}
+1: late() {
+	i1.evaluate();
+}
+fitness(NULL) {
+	totalStrength = i1.totalOfNeighborStrengths(individual);
+	return 1.1 - totalStrength / p1.individualCount;
+}
+modifyChild() {
+	child.setSpatialPosition(p1.pointReflected(parent1.spatialPosition + rnorm(2, 0, 0.02)));
+	return T;
+}
+200 late() { cat("\nTotal mutation frequencies: " + sum(sim.mutationFrequencies(NULL)) + "\n"); }

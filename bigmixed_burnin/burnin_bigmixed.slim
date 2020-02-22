@@ -1,0 +1,26 @@
+// This script is used to generate the burn-in file used in test 32
+// It should be run with SLiM version 2.0, so that it saves a file in a format all versions can read
+// run command: "../slim2.0/slim" -t -m -s 0 "./burnin_bigmixed.slim"
+
+initialize() {
+   initializeMutationRate(5.8e-7);
+   initializeMutationType("m1", 0.5, "f", 0.0);
+   initializeMutationType("m2", 0.5, "f", 0.01);
+   initializeMutationType("m3", 0.5, "f", -0.01);
+   initializeGenomicElementType("g1", c(m1, m2, m3), c(1.0, 0.01, 1.0));
+   initializeGenomicElement(g1, 0, 1e5-1);
+   initializeRecombinationRate(6.32e-6);
+}
+
+1 {
+   sim.addSubpop("p1", 10000);
+}
+1: {
+   if (sim.generation % 100 == 0) cat(sim.generation + "...\n");
+}
+200000 late() {
+   sim.outputFull("./burnin_bigmixed_200000_output.txt");
+   sim.simulationFinished();
+}
+
+

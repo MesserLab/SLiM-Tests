@@ -1,0 +1,45 @@
+// neutral heterozygosity.slim : ^Mean nucleotide heterozygosity: (.*)$
+//
+// A test script with a vanilla neutral simulation, measured by heterozygosity
+//
+
+initialize() {
+	defineConstant("L", 1e6);
+	defineConstant("mu", 1e-6);
+	defineConstant("N", 1000);
+	
+	initializeMutationRate(mu);
+	initializeMutationType("m1", 0.5, "f", 0.0);
+	initializeGenomicElementType("g1", m1, 1.0);
+	initializeGenomicElement(g1, 0, L-1);
+	initializeRecombinationRate(1e-7);
+}
+1 {
+	sim.addSubpop("p1", N);
+}
+10000 late() {
+	// Estimate the mean heterozygosity in a subpopulation by sampling
+	// individuals at random and averaging the heterozygosity across
+	// all of the individuals sampled.
+	//
+	// H = subpopHeterozygosity(p1)
+	
+	sampleSize = 100;
+	
+	sampledIndividuals = sample(p1.individuals, sampleSize, replace=T);
+	pi_total = 0;
+	
+	for (individual in sampledIndividuals)
+	{
+		genomes = individual.genomes;
+		muts1 = genomes[0].mutations;
+		muts2 = genomes[1].mutations;
+		unshared = setSymmetricDifference(muts1, muts2);
+		individual_pi = size(unshared) / L;
+		pi_total = pi_total + individual_pi;
+	}
+	H = pi_total / sampleSize;
+	
+	cat("\nExpected heterozygosity: " + 4*N*mu); // 4*Ne*mu
+	cat("\nMean nucleotide heterozygosity: " + H + "\n");
+}

@@ -1,0 +1,6 @@
+// nfds.slim : ^Total mutation frequencies: (.*)$
+//
+// A test script for modeling negative frequency-dependent selection with a fitness() callback
+//
+initialize() {
+	initializeMutationRate(1e-7);	initializeMutationType("m1", 0.5, "f", 0.0);    // neutral	initializeMutationType("m2", 0.5, "f", 0.1);    // balanced	initializeGenomicElementType("g1", c(m1,m2), c(999,1));	initializeGenomicElement(g1, 0, 99999);	initializeRecombinationRate(1e-8);}1 { sim.addSubpop("p1", 1500); }fitness(m2) {	return 1.5 - sim.mutationFrequencies(p1, mut);}2000 late() { cat("\nTotal mutation frequencies: " + sum(sim.mutationFrequencies(NULL)) + "\n"); }

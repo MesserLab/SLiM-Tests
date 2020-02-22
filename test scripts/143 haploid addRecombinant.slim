@@ -1,0 +1,45 @@
+// haploid addRecombinant.slim : ^Fixed mutations: (.*)$
+//
+// Test a vanilla haploid model using addRecombinant()
+//
+
+// BEWARE: This test is known to fail tree-seq cross-check (TSXC)!
+// This is because mutations fix at frequency 0.5 (which is handled correctly
+// for crosscheck, adding the new fixed mutation to every extant genome in
+// the tree sequence), but then addRecombinant() makes new second genomes
+// that have no parent and thus do not inherit the fixed mutations, because
+// of the NULL,NULL,NULL designation.  We could pass genome2,NULL,NULL
+// instead, but then new mutations would be generated in the second genome,
+// which we don't want.  This problem requires further thought.  Perhaps
+// new empty genomes should start with a derived state equal to all presently
+// fixed mutations, since that is what is guaranteed by crosscheck.
+// Better would be for SLiM to really understand that the second genomes
+// are null genomes, so that all of this could be handled more intelligently.
+
+initialize() {
+	initializeSLiMModelType("nonWF");
+	defineConstant("K", 500);	// carrying capacity
+	initializeMutationType("m1", 0.5, "f", 0.0);
+	initializeGenomicElementType("g1", m1, 1.0);
+	initializeGenomicElement(g1, 0, 99999);
+	initializeMutationRate(1e-7);
+	initializeRecombinationRate(1e-8);
+}
+reproduction() {
+	subpop.addRecombinant(genome1, NULL, NULL, NULL, NULL, NULL);
+}
+1 early() {
+	sim.addSubpop("p1", 500);
+}
+early() {
+	p1.fitnessScaling = K / p1.individualCount;
+}
+late() {
+	// remove neutral mutations in the haploid genomes that have fixed
+	muts = sim.mutationsOfType(m1);
+	freqs = sim.mutationFrequencies(NULL, muts);
+	
+	if (sum(freqs == 0.5))
+		sim.subpopulations.genomes.removeMutations(muts[freqs == 0.5], T);
+}
+50000 late() { catn("Fixed mutations: " + sim.substitutions.size() + " fixed"); }

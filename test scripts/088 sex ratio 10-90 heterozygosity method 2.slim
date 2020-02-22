@@ -1,0 +1,37 @@
+// sex ratio 10-90 heterozygosity method 2.slim : ^Mean nucleotide heterozygosity: (.*)$
+
+initialize() {
+	defineConstant("L", 1e6);
+	defineConstant("mu", 1e-6);
+	defineConstant("N", 300);
+	
+	initializeSex("A");
+	initializeMutationRate(mu);
+	initializeMutationType("m1", 0.5, "f", 0.0);
+	initializeGenomicElementType("g1", m1, 1.0);
+	initializeGenomicElement(g1, 0, L-1);
+	initializeRecombinationRate(1e-6);
+}
+1 {
+	sim.addSubpop("p1", N);
+	p1.setSexRatio(0.1);
+}
+5000 late() {
+	// Estimate heterozygosity; see model 041 for comments
+	sampleSize = 100;
+	sampledIndividuals = sample(p1.individuals, sampleSize, replace=T);
+	pi_total = 0;
+	
+	for (individual in sampledIndividuals)
+	{
+		genomes = individual.genomes;
+		muts1 = genomes[0].mutations;
+		muts2 = genomes[1].mutations;
+		unshared = setSymmetricDifference(muts1, muts2);
+		individual_pi = size(unshared) / L;
+		pi_total = pi_total + individual_pi;
+	}
+	H = pi_total / sampleSize;
+	
+	cat("\nMean nucleotide heterozygosity: " + H + "\n");
+}

@@ -1,0 +1,39 @@
+// mut add_remove_sub Y.slim : ^Total mutation frequencies: (.*)$
+//
+// Test adding, removing, and substituting mutations randomly
+//
+initialize() {
+	initializeSex("Y");
+	initializeMutationRate(1e-7);
+	initializeMutationType("m1", 0.5, "f", 0.0);
+	initializeGenomicElementType("g1", m1, 1.0);
+	initializeGenomicElement(g1, 0, 1e5-1);
+	initializeRecombinationRate(1e-7);
+}
+1 {
+	sim.addSubpop("p1", 1000);
+}
+1: late()
+{
+	muts = sim.mutations;
+	gens = sim.subpopulations.genomes;
+	gens = gens[!gens.isNullGenome];
+	
+	mutSampleSize = rdunif(1, min=0, max=muts.size());
+	mutSample = sample(muts, mutSampleSize, replace=F);
+	genSampleSize = rdunif(1, min=0, max=gens.size());
+	genSample = sample(gens, genSampleSize, replace=F);
+	
+	if (runif(1) < 0.9)
+	{
+		// remove a randomly chosen mutation from a random set of genomes
+		sub = (runif(1) < 0.1);
+		genSample.removeMutations(mutSample, substitute=sub);
+	}
+	else
+	{
+		// add a randomly chosen mutation to a random set of genomes
+		genSample.addMutations(mutSample);
+	}
+}
+250 late() { cat("\nTotal mutation frequencies: " + sum(sim.mutationFrequencies(NULL)) + "\n"); }
