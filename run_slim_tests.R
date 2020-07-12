@@ -9,7 +9,7 @@
 #
 
 # What are all the SLiM versions that are available?
-versions_path <- "/Users/bhaller/Documents/Research/MesserLab/SLiM-Tests/"
+versions_path <- "~/Desktop/SLiM-Tests/"
 versions <- list.files(versions_path, "slim[2-3].*", include.dirs=T)
 versions
 
@@ -132,6 +132,8 @@ run_test <- function(test_name, test_versions, replicates=1, force_run=FALSE, pr
 	if ((length(output_grep_pattern) == 0) || (nchar(output_grep_pattern) == 0))
 		stop(paste0("Output grep pattern not found in line:\n", script[1]))
 	
+	last_cpu <- NULL
+	
 	for (version in test_versions)
 	{
 		versionfolder <- paste0(versions_path, version, "/")
@@ -238,6 +240,10 @@ run_test <- function(test_name, test_versions, replicates=1, force_run=FALSE, pr
 			}
 		}
 		
+		# save off cpu usage data so we can do a t-test at the end
+		next_to_last_cpu <- last_cpu
+		last_cpu <- cpu_usages
+		
 		if (is.null(cpu_usages) || all(is.na(cpu_usages)))
 		{
 			cpu_line <- paste0("  NA")
@@ -301,6 +307,18 @@ run_test <- function(test_name, test_versions, replicates=1, force_run=FALSE, pr
 			cat("************** CHANGED *************\n")
 	}
 	
+	# do a t-test to see if times changed significantly
+	# it turns out significant differences are found that are nevertheless tiny, so this needs to look at effect size also
+	# if (is.null(next_to_last_cpu) || is.null(last_cpu) || all(is.na(next_to_last_cpu)) || all(is.na(last_cpu)))
+		# cat("************** CAN'T COMPARE TIMES *************\n")
+	# else if (t.test(next_to_last_cpu, last_cpu, conf.level=0.99)$p.value < 0.01)
+	# {
+		# cat("************** TIMES DIFFER SIGNIFICANTLY *************\n")
+		# print(next_to_last_cpu)
+		# print(last_cpu)
+		# print(t.test(next_to_last_cpu, last_cpu, conf.level=0.99))
+	# }
+	
 	cat("\n");
 	
 	invisible(results.numeric);
@@ -308,7 +326,7 @@ run_test <- function(test_name, test_versions, replicates=1, force_run=FALSE, pr
 
 
 # Run all tests that have not already been run; to re-run tests, run the clean code below first
-tests_path <- "/Users/bhaller/Documents/Research/MesserLab/SLiM-Tests/test scripts/"
+tests_path <- "~/Desktop/SLiM-Tests/test scripts/"
 tests <- list.files(tests_path, "*.slim")
 tests <- gsub("^(.*)\\.slim$", "\\1", tests)	# strip off .slim extensions
 tests
