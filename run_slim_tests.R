@@ -9,7 +9,7 @@
 #
 
 # What are all the SLiM versions that are available?
-versions_path <- "~/Desktop/SLiM-Tests/"
+versions_path <- path.expand("~/Desktop/SLiM-Tests/")
 versions <- list.files(versions_path, "slim[2-3].*", include.dirs=T)
 versions
 
@@ -133,6 +133,7 @@ run_test <- function(test_name, test_versions, replicates=1, force_run=FALSE, pr
 		stop(paste0("Output grep pattern not found in line:\n", script[1]))
 	
 	last_cpu <- NULL
+	last_wall <- NULL
 	
 	for (version in test_versions)
 	{
@@ -143,6 +144,7 @@ run_test <- function(test_name, test_versions, replicates=1, force_run=FALSE, pr
 		
 		# run the test script with replicates as requested
 		cpu_usages <- NULL
+		wall_usages <- NULL
 		initial_mems <- NULL
 		peak_mems <- NULL
 		patterns <- NULL
@@ -170,6 +172,7 @@ run_test <- function(test_name, test_versions, replicates=1, force_run=FALSE, pr
 					if ((length(grep("^ERROR ", errlines)) > 0) || (length(grep("^Error on script line ", errlines)) > 0))
 					{
 						cpu_usages <- c(cpu_usages, NA)
+						wall_usages <- c(wall_usages, NA)
 						initial_mems <- c(initial_mems, NA)
 						peak_mems <- c(peak_mems, NA)
 					}
@@ -178,6 +181,10 @@ run_test <- function(test_name, test_versions, replicates=1, force_run=FALSE, pr
 						cpu_usage <- grep(" CPU time used: ", errlines, value=T)
 						cpu_usage <- gsub("^.* used: (.*)$", "\\1", cpu_usage)
 						cpu_usages <- c(cpu_usages, as.numeric(cpu_usage))
+						
+						wall_usage <- grep(" Wall time used: ", errlines, value=T)
+						wall_usage <- gsub("^.* used: (.*)$", "\\1", wall_usage)
+						wall_usages <- c(wall_usages, as.numeric(wall_usage))
 						
 						initial_mem <- grep(" Initial memory usage: ", errlines, value=T)
 						initial_mem <- gsub("^.* usage: (.*) bytes .*$", "\\1", initial_mem)
@@ -240,19 +247,24 @@ run_test <- function(test_name, test_versions, replicates=1, force_run=FALSE, pr
 			}
 		}
 		
-		# save off cpu usage data so we can do a t-test at the end
+		# save off timing data so we can do a t-test at the end
 		next_to_last_cpu <- last_cpu
 		last_cpu <- cpu_usages
+		next_to_last_wall <- last_wall
+		last_wall <- wall_usages
 		
+		# CPU usage that is NULL, or all NA, indicates that the run failed, so use NA for everything
 		if (is.null(cpu_usages) || all(is.na(cpu_usages)))
 		{
 			cpu_line <- paste0("  NA")
+			wall_line <- paste0("  NA")
 			initial_mem_line <- paste0("  NA")
 			peak_mem_line <- paste0("  NA")
 			pattern_line <- paste0("  NA")
 			mutrun_line <- paste0("  NA")
 			
 			cpu_usages <- NA
+			wall_usages <- NA
 			initial_mems <- NA
 			peak_mems <- NA
 			mutruns <- NA
@@ -261,12 +273,16 @@ run_test <- function(test_name, test_versions, replicates=1, force_run=FALSE, pr
 		else
 		{
 			cpu_usages <- mean(cpu_usages)
+			wall_usages <- if (length(wall_usages) == 0) NA else mean(wall_usages)
 			initial_mems <- mean(initial_mems)
 			peak_mems <- mean(peak_mems)
 			mutruns <- if (any(is.na(mutruns))) NA else mean(mutruns)
 			
 			cpu_line <- format(cpu_usages, digits=3, scientific=F)
 			cpu_line <- paste0("  ", cpu_line, " secs")
+			
+			wall_line <- format(wall_usages, digits=3, scientific=F)
+			wall_line <- paste0("  ", wall_line, " secs")
 			
 			initial_mem_line <- format(initial_mems / (1024*1024), digits=3, nsmall=2, scientific=F)
 			initial_mem_line <- paste0("  ", initial_mem_line, " MB")
@@ -291,8 +307,8 @@ run_test <- function(test_name, test_versions, replicates=1, force_run=FALSE, pr
 		
 		setwd(old_wd)
 		
-		results <- rbind(results, data.frame(version=version, cpu=cpu_line, initial=initial_mem_line, peak=peak_mem_line, mutruns= mutrun_line, output=pattern_line))
-		results.numeric <- rbind(results.numeric, data.frame(version=version, cpu=cpu_usages, initial=initial_mems, peak=peak_mems, mutruns=mutruns, output=first_output, stringsAsFactors=F))
+		results <- rbind(results, data.frame(version=version, cpu=cpu_line, wall=wall_line, initial=initial_mem_line, peak=peak_mem_line, mutruns= mutrun_line, output=pattern_line))
+		results.numeric <- rbind(results.numeric, data.frame(version=version, cpu=cpu_usages, wall=wall_usages, initial=initial_mems, peak=peak_mems, mutruns=mutruns, output=first_output, stringsAsFactors=F))
 	}
 	
 	print(results);
@@ -326,7 +342,7 @@ run_test <- function(test_name, test_versions, replicates=1, force_run=FALSE, pr
 
 
 # Run all tests that have not already been run; to re-run tests, run the clean code below first
-tests_path <- "~/Desktop/SLiM-Tests/test scripts/"
+tests_path <- path.expand("~/Desktop/SLiM-Tests/test scripts/")
 tests <- list.files(tests_path, "*.slim")
 tests <- gsub("^(.*)\\.slim$", "\\1", tests)	# strip off .slim extensions
 tests
