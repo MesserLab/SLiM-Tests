@@ -27,8 +27,16 @@ initialize() {
 	if (runif(1) < 0.9)
 	{
 		// remove a randomly chosen mutation from a random set of genomes
-		sub = (runif(1) < 0.1);
-		genSample.removeMutations(mutSample, substitute=sub);
+		if (runif(1) < 0.1)
+		{
+			// doing a substitution, so we need to remove from all genomes
+			gens.removeMutations(mutSample, substitute=T);
+		}
+		else
+		{
+			// not doing a substitution, so remove from a sample of genomes
+			genSample.removeMutations(mutSample, substitute=F);
+		}
 	}
 	else
 	{
