@@ -13,7 +13,10 @@ initialize() {
 1 {
 	sim.addSubpop("p1", 1000);
 }
-1: late()
+// Avoid changes in the last generation, because of behavior changes that we don't want
+// to flag: specifically, substituted mutations used to have a reported frequency of 0.0
+// but now have a reported frequency of 1.0 (which seems more correct).
+1:249 late()
 {
 	muts = sim.mutations;
 	gens = sim.subpopulations.genomes;
