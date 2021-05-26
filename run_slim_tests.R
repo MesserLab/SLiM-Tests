@@ -39,7 +39,24 @@ versions
 
 # Select a subset of versions for testing; unless you're interested in historical comparisons,
 # the last four versions generally suffices to establish discontinuities
-versions <- versions[(length(versions) - 4) : length(versions)]
+#versions <- versions[length(versions)]
+versions <- versions[(length(versions) - 3) : length(versions)]
+versions
+
+# Add a specific version back in for comparison
+versions <- c("slim3.5", versions)
+#versions <- c("slim3.4", versions)
+#versions <- c("slim3.3", versions)
+#versions <- c("slim3.2", versions)
+#versions <- c("slim3.1", versions)
+#versions <- c("slim3.0", versions)
+#versions <- c("slim2.6", versions)
+#versions <- c("slim2.5", versions)
+#versions <- c("slim2.4", versions)
+#versions <- c("slim2.3", versions)
+#versions <- c("slim2.2", versions)
+#versions <- c("slim2.1", versions)
+#versions <- c("slim2.0", versions)
 versions
 
 
