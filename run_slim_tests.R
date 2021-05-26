@@ -323,17 +323,28 @@ run_test <- function(test_name, test_versions, replicates=1, force_run=FALSE, pr
 			cat("************** CHANGED *************\n")
 	}
 	
-	# do a t-test to see if times changed significantly
-	# it turns out significant differences are found that are nevertheless tiny, so this needs to look at effect size also
-	# if (is.null(next_to_last_cpu) || is.null(last_cpu) || all(is.na(next_to_last_cpu)) || all(is.na(last_cpu)))
-		# cat("************** CAN'T COMPARE TIMES *************\n")
-	# else if (t.test(next_to_last_cpu, last_cpu, conf.level=0.99)$p.value < 0.01)
-	# {
-		# cat("************** TIMES DIFFER SIGNIFICANTLY *************\n")
-		# print(next_to_last_cpu)
-		# print(last_cpu)
-		# print(t.test(next_to_last_cpu, last_cpu, conf.level=0.99))
-	# }
+	if (replicates > 1)
+	{
+		# do a t-test to see if times changed significantly
+		# it turns out significant differences are found that are nevertheless tiny, so this looks at effect size also
+		# the purpose here is not to flag every small difference, but to automatically detect large regressions
+		if (is.null(next_to_last_cpu) || is.null(last_cpu) || all(is.na(next_to_last_cpu)) || all(is.na(last_cpu)))
+		{
+			cat("************** CAN'T COMPARE TIMES *************\n")
+		}
+		else if (t.test(next_to_last_cpu, last_cpu, conf.level=0.99)$p.value < 0.001)
+		{
+			mean1 <- mean(next_to_last_cpu, na.rm=T)
+			mean2 <- mean(last_cpu, na.rm=T)
+			if ((mean1 / mean2 < 0.95) || (mean2 / mean1 < 0.95))	## effect size large?
+			{
+				cat("************** TIMES DIFFER SIGNIFICANTLY *************\n")
+				print(next_to_last_cpu)
+				print(last_cpu)
+				print(t.test(next_to_last_cpu, last_cpu, conf.level=0.99))
+			}
+		}
+	}
 	
 	cat("\n");
 	
