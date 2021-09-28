@@ -1,0 +1,75 @@
+// roundtrip nullcount addRecombinant X text.slim : ^### (.+) ###$
+//
+// Test round-trip file save/load (X chromosomes, binary from outputFull())
+// The goal here is to ensure that null genomes round-trip correctly
+// This model uses addRecombinant() to simulate the X, without initializeSex()
+//
+initialize() {
+	defineConstant("seed", getSeed());
+	initializeSLiMModelType("nonWF");
+	defineConstant("K", 500);
+	
+	initializeMutationType("m1", 0.5, "f", 0.0);
+	m1.convertToSubstitution = T;
+	
+	initializeGenomicElementType("g1", m1, 1.0);
+	initializeGenomicElement(g1, 0, 99999);
+	initializeMutationRate(1e-7);
+	initializeRecombinationRate(1e-8);
+	
+	defineConstant("MALE", 0);
+	defineConstant("FEMALE", 1);
+}
+reproduction() {
+	if (individual.tag == MALE)
+		return;
+	
+	mate = subpop.sampleIndividuals(1, tag=MALE);
+	breaks1 = sim.chromosome.drawBreakpoints(individual);
+	if (runif(1) <= 0.5)
+		subpop.addRecombinant(individual.genome1, individual.genome2, breaks1,
+			mate.genome1, NULL, NULL).tag = FEMALE;
+	else
+		subpop.addRecombinant(individual.genome1, individual.genome2, breaks1,
+			NULL, NULL, NULL).tag = MALE;
+}
+1 early() {
+	sim.addSubpop("p1", 50);	// all diploid in 1st gen, doesn't matter
+	p1.individuals.tag = repEach(c(MALE, FEMALE), 25);
+	sim.setValue("iter", 0);
+}
+early() {
+	p1.fitnessScaling = K / p1.individualCount;
+}
+2000 late() {
+	catn("SAVING...");
+	defineConstant("countNull1", sum(sim.subpopulations.genomes.isNullGenome));
+	catn(countNull1 + " null genomes at save...");
+	sim.outputFull("/tmp/slim_test_roundtrip.out", binary=T);
+	setSeed(seed + 1);
+}
+3000 late() {
+	s = sum(sim.mutationCounts(NULL));
+	catn("s == " + s);
+	if (sim.getValue("iter") == 0)
+	{
+		catn("RESTARTING...");
+		sim.setValue("s", s);
+		sim.setValue("iter", 1);
+		sim.readFromPopulationFile("/tmp/slim_test_roundtrip.out");
+		defineConstant("countNull2", sum(sim.subpopulations.genomes.isNullGenome));
+		catn(countNull2 + " null genomes at restart...");
+		inds = sim.subpopulations.individuals;
+		inds.tag = ifelse(inds.genome2.isNullGenome, MALE, FEMALE);
+		setSeed(seed + 1);
+	}
+	else
+	{
+		if (countNull1 != countNull2)
+			catn("### " + countNull1 + " != " + countNull2 + " ###");
+		else if (s == sim.getValue("s"))
+			catn("### " + s + " ###");
+		else
+			catn("### NOT EQUAL ###");
+	}
+}

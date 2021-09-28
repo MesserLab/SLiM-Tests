@@ -39,7 +39,16 @@ reproduction() {
 }
 1 early() {
 	// start from two bacteria with different beneficial mutations
-	sim.addSubpop("p1", 2);
+	if (version(F)[1] > 3.6999)
+	{
+		sim.addSubpop("p1", 2, haploid=T);
+		defineConstant("FIX_F", 1.0);
+	}
+	else
+	{
+		sim.addSubpop("p1", 2);
+		defineConstant("FIX_F", 0.5);
+	}
 	
 	// add beneficial mutations to each bacterium, but at different loci
 	g = p1.individuals.genome1;
@@ -54,10 +63,10 @@ early() {
 	muts = sim.mutations;
 	freqs = sim.mutationFrequencies(NULL, muts);
 	
-	if (all(freqs == 0.5))
+	if (all(freqs == FIX_F))
 	{
 		sim.treeSeqOutput("/tmp/slim_test_145.trees");
-		catn("Generation " + sim.generation + ": " + sum(freqs == 0.5) + " fixed.");
+		catn("Generation " + sim.generation + ": " + sum(freqs == FIX_F) + " fixed.");
 		sim.simulationFinished();
 	}
 }

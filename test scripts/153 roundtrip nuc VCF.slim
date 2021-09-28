@@ -6,7 +6,7 @@
 // BEWARE: This test is known to fail tree-seq cross-check (TSXC)
 // This is because fixed mutations are not preserved across save/load with
 // readFromVCF(), because it just reads state into specific genomes, not
-// across the population as a whole (because it is a method on Genme).
+// across the population as a whole (because it is a method on Genome).
 // The new individuals in p2 start with empty genomes that tree-seq
 // does not consider to contain the previously fixed mutations, but SLiM
 // says those mutations are fixed for ALL genomes, so cross-check fails.
