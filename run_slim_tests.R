@@ -44,7 +44,8 @@ versions <- versions[(length(versions) - 3) : length(versions)]
 versions
 
 # Add a specific version back in for comparison
-versions <- c("slim3.5", versions)
+versions <- c("slim3.6", versions)
+#versions <- c("slim3.5", versions)
 #versions <- c("slim3.4", versions)
 #versions <- c("slim3.3", versions)
 #versions <- c("slim3.2", versions)
