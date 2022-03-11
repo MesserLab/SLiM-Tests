@@ -10,7 +10,7 @@
 
 # What are all the SLiM versions that are available?
 versions_path <- path.expand("~/Desktop/SLiM-Tests/")
-versions <- list.files(versions_path, "slim[2-3].*", include.dirs=T)
+versions <- list.files(versions_path, "slim[2-4].*", include.dirs=T)
 versions
 
 
