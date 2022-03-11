@@ -3,84 +3,84 @@
 // Test round-trip file save/load (nucleotide, text from outputFull())
 //
 initialize() {
-    defineConstant("seed", getSeed());
-    initializeSLiMOptions(dimensionality="xy", nucleotideBased=T);
-    initializeAncestralNucleotides(randomNucleotides(1000));
-    initializeMutationTypeNuc("m1", 0.5, "f", 0.0);
-    initializeMutationTypeNuc("m2", 0.5, "e", -0.01);
-    initializeMutationTypeNuc("m3", 0.5, "n", 0.05, 0.01);
-    initializeGenomicElementType("g1", c(m1,m2,m3), c(1.0,0.1,0.01), mmJukesCantor(1e-4));
-    initializeGenomicElement(g1, 0, 999);
-    initializeRecombinationRate(1e-7);
-    
-    // spatial competition
-    initializeInteractionType(1, "xy", reciprocal=T, maxDistance=0.3);
-    i1.setInteractionFunction("n", 3.0, 0.1);
-    
-    // spatial mate choice
-    initializeInteractionType(2, "xy", reciprocal=T, maxDistance=0.1);
-    i2.setInteractionFunction("n", 1.0, 0.02);
+	defineConstant("seed", getSeed());
+	initializeSLiMOptions(dimensionality="xy", nucleotideBased=T);
+	initializeAncestralNucleotides(randomNucleotides(1000));
+	initializeMutationTypeNuc("m1", 0.5, "f", 0.0);
+	initializeMutationTypeNuc("m2", 0.5, "e", -0.01);
+	initializeMutationTypeNuc("m3", 0.5, "n", 0.05, 0.01);
+	initializeGenomicElementType("g1", c(m1,m2,m3), c(1.0,0.1,0.01), mmJukesCantor(1e-4));
+	initializeGenomicElement(g1, 0, 999);
+	initializeRecombinationRate(1e-7);
+	
+	// spatial competition
+	initializeInteractionType(1, "xy", reciprocal=T, maxDistance=0.3);
+	i1.setInteractionFunction("n", 3.0, 0.1);
+	
+	// spatial mate choice
+	initializeInteractionType(2, "xy", reciprocal=T, maxDistance=0.1);
+	i2.setInteractionFunction("n", 1.0, 0.02);
 }
 1 late() {
-    sim.addSubpop("p1", 300);
-    sim.addSubpop("p2", 300);
-    c(p1,p2).setSpatialBounds(c(0.0, 0.0, 1.05, 1.05));
-    p1.setCloningRate(0.15);
-    c(p1,p2).setSelfingRate(0.1);
-    p1.setMigrationRates(p2, 0.01);
-    p2.setMigrationRates(p1, 0.01);
-    sim.subpopulations.individuals.setSpatialPosition(p1.pointUniform(600));
-    sim.setValue("iter", 0);
+	sim.addSubpop("p1", 300);
+	sim.addSubpop("p2", 300);
+	c(p1,p2).setSpatialBounds(c(0.0, 0.0, 1.05, 1.05));
+	p1.setCloningRate(0.15);
+	c(p1,p2).setSelfingRate(0.1);
+	p1.setMigrationRates(p2, 0.01);
+	p2.setMigrationRates(p1, 0.01);
+	sim.subpopulations.individuals.setSpatialPosition(p1.pointUniform(600));
+	sim.setValue("iter", 0);
 }
 2000 late() {
-    catn("SAVING...");
-    sim.outputFull("/tmp/slim_test_roundtrip.out", binary=F);
-    setSeed(seed + 1);
+	catn("SAVING...");
+	sim.outputFull("/tmp/slim_test_roundtrip.out", binary=F);
+	setSeed(seed + 1);
 }
 3000 late() {
-    s = sum(sim.mutationCounts(NULL)) + sum(sim.chromosome.ancestralNucleotides(format="integer"));
-    catn("s == " + s);
-    if (sim.getValue("iter") == 0)
-    {
-        catn("RESTARTING...");
-        sim.setValue("s", s);
-        sim.setValue("iter", 1);
-        sim.readFromPopulationFile("/tmp/slim_test_roundtrip.out");
-        c(p1,p2).setSpatialBounds(c(0.0, 0.0, 1.05, 1.05));
-        p1.setCloningRate(0.15);
-        c(p1,p2).setSelfingRate(0.1);
-        p1.setMigrationRates(p2, 0.01);
-        p2.setMigrationRates(p1, 0.01);
-        setSeed(seed + 1);
-    }
-    else
-    {
-        if (s == sim.getValue("s"))
-            catn("### " + s + " ###");
-        else
-            catn("### NOT EQUAL ###");
-    }
+	s = sum(sim.mutationCounts(NULL)) + sum(sim.chromosome.ancestralNucleotides(format="integer"));
+	catn("s == " + s);
+	if (sim.getValue("iter") == 0)
+	{
+		catn("RESTARTING...");
+		sim.setValue("s", s);
+		sim.setValue("iter", 1);
+		sim.readFromPopulationFile("/tmp/slim_test_roundtrip.out");
+		c(p1,p2).setSpatialBounds(c(0.0, 0.0, 1.05, 1.05));
+		p1.setCloningRate(0.15);
+		c(p1,p2).setSelfingRate(0.1);
+		p1.setMigrationRates(p2, 0.01);
+		p2.setMigrationRates(p1, 0.01);
+		setSeed(seed + 1);
+	}
+	else
+	{
+		if (s == sim.getValue("s"))
+			catn("### " + s + " ###");
+		else
+			catn("### NOT EQUAL ###");
+	}
 }
 late() {
-    i1.evaluate();
-    i2.evaluate();
+	i1.evaluate();
+	i2.evaluate();
 }
 fitness(NULL) {
-    // spatial competition
-    totalStrength = i1.totalOfNeighborStrengths(individual);
-    return 1.1 - totalStrength / p1.individualCount;
+	// spatial competition
+	totalStrength = i1.totalOfNeighborStrengths(individual);
+	return 1.1 - totalStrength / p1.individualCount;
 }
 mateChoice() {
-    // spatial mate choice
-    return i2.strength(individual);
+	// spatial mate choice
+	return i2.strength(individual);
 }
 modifyChild() {
-    // absorbing boundaries
-    pos = parent1.spatialPosition + rnorm(2, 0, 0.02);
-    if (!p1.pointInBounds(pos))
-        return F;
-    
-    child.setSpatialPosition(pos);
-    return T;
+	// absorbing boundaries
+	pos = parent1.spatialPosition + rnorm(2, 0, 0.02);
+	if (!p1.pointInBounds(pos))
+		return F;
+	
+	child.setSpatialPosition(pos);
+	return T;
 }
 

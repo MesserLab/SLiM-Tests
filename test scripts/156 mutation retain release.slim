@@ -3,24 +3,24 @@
 // Testing the time necessary to construct/destruct EidosValue vectors of mutations, which requires retain/release from SLiM 3.5 onward
 //
 initialize() {
-    initializeMutationRate(1e-6);
-    initializeMutationType("m1", 0.5, "f", 0.0);
-    initializeGenomicElementType("g1", m1, 1.0);
-    initializeGenomicElement(g1, 0, 9999999);
-    initializeRecombinationRate(1e-8);
+	initializeMutationRate(1e-6);
+	initializeMutationType("m1", 0.5, "f", 0.0);
+	initializeGenomicElementType("g1", m1, 1.0);
+	initializeGenomicElement(g1, 0, 9999999);
+	initializeRecombinationRate(1e-8);
 }
 
 1 {
-    sim.addSubpop("p1", 100);
+	sim.addSubpop("p1", 100);
 }
 
 500 late() {
-    start = clock();
-    
-    for (i in 1:100000)
-        foo = sim.mutations;
-        
-    end = clock();
-    catn("Elapsed time: " + (end - start));
-    catn("Mutation count: " + size(sim.mutations));
+	start = clock();
+	
+	for (i in 1:100000)
+		foo = sim.mutations;
+	
+	end = clock();
+	catn("Elapsed time: " + (end - start));
+	catn("Mutation count: " + size(sim.mutations));
 }

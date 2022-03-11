@@ -4,46 +4,46 @@
 // This version is hermaphroditic
 //
 initialize() {
-    initializeSLiMModelType("nonWF");
-    defineConstant("K", 100);     // carrying capacity per subpop
-    defineConstant("N", 5);     // number of subpopulations
-    
-    initializeMutationType("m1", 0.5, "f", 0.0);
-    m1.convertToSubstitution = T;
-    
-    initializeGenomicElementType("g1", m1, 1.0);
-    initializeGenomicElement(g1, 0, 99999);
-    initializeMutationRate(1e-7);
-    initializeRecombinationRate(1e-8);
+	initializeSLiMModelType("nonWF");
+	defineConstant("K", 100);     // carrying capacity per subpop
+	defineConstant("N", 5);     // number of subpopulations
+	
+	initializeMutationType("m1", 0.5, "f", 0.0);
+	m1.convertToSubstitution = T;
+	
+	initializeGenomicElementType("g1", m1, 1.0);
+	initializeGenomicElement(g1, 0, 99999);
+	initializeMutationRate(1e-7);
+	initializeRecombinationRate(1e-8);
 }
 reproduction() {
-    if (subpop == p1000)
-        return;
-    
-    subpop.addCrossed(individual, subpop.sampleIndividuals(1));
+	if (subpop == p1000)
+		return;
+	
+	subpop.addCrossed(individual, subpop.sampleIndividuals(1));
 }
 1 early() {
-    for (i in 1:N)
-        sim.addSubpop(i, K);
-    sim.addSubpop(1000, 0); // graveyard for one generation
+	for (i in 1:N)
+		sim.addSubpop(i, K);
+	sim.addSubpop(1000, 0); // graveyard for one generation
 }
 early() {
-    // density-dependence and random extinctions
-    for (subpop in sim.subpopulations)
-            subpop.fitnessScaling = K / subpop.individualCount;
+	// density-dependence and random extinctions
+	for (subpop in sim.subpopulations)
+		subpop.fitnessScaling = K / subpop.individualCount;
 }
 survival() {
-    // random migration of survivors; individuals that are dying go to p1000,
-    // and individuals in p1000 always die (with a lag of one generation).
-    if (subpop == p1000)
-        return F;
-    if (surviving == F)
-        return p1000;
-    return sample(sim.subpopulations, 1);
+	// random migration of survivors; individuals that are dying go to p1000,
+	// and individuals in p1000 always die (with a lag of one generation).
+	if (subpop == p1000)
+		return F;
+	if (surviving == F)
+		return p1000;
+	return sample(sim.subpopulations, 1);
 }
 late() {
-    sim.setValue("sizes", c(sim.getValue("sizes"), p1000.individualCount));
+	sim.setValue("sizes", c(sim.getValue("sizes"), p1000.individualCount));
 }
 10000 late() {
-    catn("### " + format("%.4f", mean(sim.getValue("sizes"))) + " ###");
+	catn("### " + format("%.4f", mean(sim.getValue("sizes"))) + " ###");
 }

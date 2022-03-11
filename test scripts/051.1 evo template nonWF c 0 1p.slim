@@ -8,57 +8,57 @@
 //
 
 initialize() {
-    defineConstant("L", 1e6);
-    defineConstant("mu", 1e-6);
-    defineConstant("K", 300);
-    
-    initializeSLiMModelType("nonWF");
-    initializeMutationRate(mu);
-    initializeMutationType("m1", 0.5, "f", 0.0);
-    m1.convertToSubstitution = T;
-    initializeMutationType("m2", 0.5, "f", 0.1);
-    initializeMutationType("m3", 0.5, "f", -0.05);
-    initializeGenomicElementType("g1", c(m1,m2,m3), c(1.0,0.0001,0.1));
-    initializeGenomicElement(g1, 0, L-1);
-    initializeRecombinationRate(1e-7);
+	defineConstant("L", 1e6);
+	defineConstant("mu", 1e-6);
+	defineConstant("K", 300);
+	
+	initializeSLiMModelType("nonWF");
+	initializeMutationRate(mu);
+	initializeMutationType("m1", 0.5, "f", 0.0);
+	m1.convertToSubstitution = T;
+	initializeMutationType("m2", 0.5, "f", 0.1);
+	initializeMutationType("m3", 0.5, "f", -0.05);
+	initializeGenomicElementType("g1", c(m1,m2,m3), c(1.0,0.0001,0.1));
+	initializeGenomicElement(g1, 0, L-1);
+	initializeRecombinationRate(1e-7);
 }
 reproduction() {
-    subpop.addCloned(individual);
+	subpop.addCloned(individual);
 }
 1 early() {
-    sim.addSubpop("p1", K);
+	sim.addSubpop("p1", K);
 }
 early() {
-    // make the beneficial mutations have only relative fitness effects
-    m2muts = sim.mutationsOfType(m2);
-    m2freqs = sim.mutationFrequencies(NULL, mutations=m2muts);
-    m2fits = 1.0 + m2freqs * m2muts.selectionCoeff;
-    m2fit_overall = product(m2fits);
-    
-    // and also the deleterious mutations, in this model
-    m3muts = sim.mutationsOfType(m3);
-    m3freqs = sim.mutationFrequencies(NULL, mutations=m3muts);
-    m3fits = 1.0 + m3freqs * m3muts.selectionCoeff;
-    m3fit_overall = product(m3fits);
-    
-    p1.fitnessScaling = (K / p1.individualCount) / (m2fit_overall * m3fit_overall);
+	// make the beneficial mutations have only relative fitness effects
+	m2muts = sim.mutationsOfType(m2);
+	m2freqs = sim.mutationFrequencies(NULL, mutations=m2muts);
+	m2fits = 1.0 + m2freqs * m2muts.selectionCoeff;
+	m2fit_overall = product(m2fits);
+	
+	// and also the deleterious mutations, in this model
+	m3muts = sim.mutationsOfType(m3);
+	m3freqs = sim.mutationFrequencies(NULL, mutations=m3muts);
+	m3fits = 1.0 + m3freqs * m3muts.selectionCoeff;
+	m3fit_overall = product(m3fits);
+	
+	p1.fitnessScaling = (K / p1.individualCount) / (m2fit_overall * m3fit_overall);
 }
 10000 late() {
-    // Estimate heterozygosity; see model 041 for comments
-    sampleSize = 100;
-    sampledIndividuals = sample(p1.individuals, sampleSize, replace=T);
-    pi_total = 0;
-    
-    for (individual in sampledIndividuals)
-    {
-        genomes = individual.genomes;
-        muts1 = genomes[0].mutations;
-        muts2 = genomes[1].mutations;
-        unshared = setSymmetricDifference(muts1, muts2);
-        individual_pi = size(unshared) / L;
-        pi_total = pi_total + individual_pi;
-    }
-    H = pi_total / sampleSize;
-    
-    cat("\nMean nucleotide heterozygosity: " + H + "\n");
+	// Estimate heterozygosity; see model 041 for comments
+	sampleSize = 100;
+	sampledIndividuals = sample(p1.individuals, sampleSize, replace=T);
+	pi_total = 0;
+	
+	for (individual in sampledIndividuals)
+	{
+		genomes = individual.genomes;
+		muts1 = genomes[0].mutations;
+		muts2 = genomes[1].mutations;
+		unshared = setSymmetricDifference(muts1, muts2);
+		individual_pi = size(unshared) / L;
+		pi_total = pi_total + individual_pi;
+	}
+	H = pi_total / sampleSize;
+	
+	cat("\nMean nucleotide heterozygosity: " + H + "\n");
 }
