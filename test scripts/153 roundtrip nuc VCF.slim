@@ -14,46 +14,46 @@
 // for all previously fixed mutations; see test script 143.
 
 initialize() {
-	defineConstant("seed", getSeed());
-	initializeSLiMOptions(nucleotideBased=T);
-	initializeAncestralNucleotides(randomNucleotides(1e4));
-	initializeMutationTypeNuc("m1", 0.5, "f", 0.0);
-	initializeGenomicElementType("g1", m1, 1.0, mmJukesCantor(1e-4));
-	initializeGenomicElement(g1, 0, 9999);
-	initializeRecombinationRate(1e-6);
+    defineConstant("seed", getSeed());
+    initializeSLiMOptions(nucleotideBased=T);
+    initializeAncestralNucleotides(randomNucleotides(1e4));
+    initializeMutationTypeNuc("m1", 0.5, "f", 0.0);
+    initializeGenomicElementType("g1", m1, 1.0, mmJukesCantor(1e-4));
+    initializeGenomicElement(g1, 0, 9999);
+    initializeRecombinationRate(1e-6);
 }
 1 late() {
-	sim.addSubpop("p1", 300);
-	sim.setValue("iter", 0);
+    sim.addSubpop("p1", 300);
+    sim.setValue("iter", 0);
 }
 3000 late() {
-	catn("SAVING...");
-	writeFile("/tmp/slim_VCF_nuc_FASTA.out", sim.chromosome.ancestralNucleotides());
-	p1.genomes.outputVCF("/tmp/slim_VCF_nuc.out");
-	p1.genomes.outputVCF("/tmp/slim_VCF_nuc_simple.out", simplifyNucleotides=T);
-	setSeed(seed + 1);
+    catn("SAVING...");
+    writeFile("/tmp/slim_VCF_nuc_FASTA.out", sim.chromosome.ancestralNucleotides());
+    p1.genomes.outputVCF("/tmp/slim_VCF_nuc.out");
+    p1.genomes.outputVCF("/tmp/slim_VCF_nuc_simple.out", simplifyNucleotides=T);
+    setSeed(seed + 1);
 }
 5000 late() {
-	s = sum(sim.mutationCounts(NULL)) + sum(sim.chromosome.ancestralNucleotides(format="integer"));
-	catn("s == " + s);
-	if (sim.getValue("iter") == 0)
-	{
-		catn("RESTARTING...");
-		p1.setSubpopulationSize(0);
-		sim.addSubpop("p2", 300);
-		sim.setValue("s", s);
-		sim.setValue("iter", 1);
-		sim.chromosome.setAncestralNucleotides("/tmp/slim_VCF_nuc_FASTA.out");
-		p2.genomes.readFromVCF("/tmp/slim_VCF_nuc.out", m1);
-		sim.generation = 3000;
-		setSeed(seed + 1);
-	}
-	else
-	{
-		if (s == sim.getValue("s"))
-			catn("### " + s + " ###");
-		else
-			catn("### NOT EQUAL ###");
-	}
+    s = sum(sim.mutationCounts(NULL)) + sum(sim.chromosome.ancestralNucleotides(format="integer"));
+    catn("s == " + s);
+    if (sim.getValue("iter") == 0)
+    {
+        catn("RESTARTING...");
+        p1.setSubpopulationSize(0);
+        sim.addSubpop("p2", 300);
+        sim.setValue("s", s);
+        sim.setValue("iter", 1);
+        sim.chromosome.setAncestralNucleotides("/tmp/slim_VCF_nuc_FASTA.out");
+        p2.genomes.readFromVCF("/tmp/slim_VCF_nuc.out", m1);
+        sim.generation = 3000;
+        setSeed(seed + 1);
+    }
+    else
+    {
+        if (s == sim.getValue("s"))
+            catn("### " + s + " ###");
+        else
+            catn("### NOT EQUAL ###");
+    }
 }
 

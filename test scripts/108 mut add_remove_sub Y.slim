@@ -3,48 +3,48 @@
 // Test adding, removing, and substituting mutations randomly
 //
 initialize() {
-	initializeSex("Y");
-	initializeMutationRate(1e-7);
-	initializeMutationType("m1", 0.5, "f", 0.0);
-	initializeGenomicElementType("g1", m1, 1.0);
-	initializeGenomicElement(g1, 0, 1e5-1);
-	initializeRecombinationRate(1e-7);
+    initializeSex("Y");
+    initializeMutationRate(1e-7);
+    initializeMutationType("m1", 0.5, "f", 0.0);
+    initializeGenomicElementType("g1", m1, 1.0);
+    initializeGenomicElement(g1, 0, 1e5-1);
+    initializeRecombinationRate(1e-7);
 }
 1 {
-	sim.addSubpop("p1", 1000);
+    sim.addSubpop("p1", 1000);
 }
 // Avoid changes in the last generation, because of behavior changes that we don't want
 // to flag: specifically, substituted mutations used to have a reported frequency of 0.0
 // but now have a reported frequency of 1.0 (which seems more correct).
 1:249 late()
 {
-	muts = sim.mutations;
-	gens = sim.subpopulations.genomes;
-	gens = gens[!gens.isNullGenome];
-	
-	mutSampleSize = rdunif(1, min=0, max=muts.size());
-	mutSample = sample(muts, mutSampleSize, replace=F);
-	genSampleSize = rdunif(1, min=0, max=gens.size());
-	genSample = sample(gens, genSampleSize, replace=F);
-	
-	if (runif(1) < 0.9)
-	{
-		// remove a randomly chosen mutation from a random set of genomes
-		if (runif(1) < 0.1)
-		{
-			// doing a substitution, so we need to remove from all genomes
-			gens.removeMutations(mutSample, substitute=T);
-		}
-		else
-		{
-			// not doing a substitution, so remove from a sample of genomes
-			genSample.removeMutations(mutSample, substitute=F);
-		}
-	}
-	else
-	{
-		// add a randomly chosen mutation to a random set of genomes
-		genSample.addMutations(mutSample);
-	}
+    muts = sim.mutations;
+    gens = sim.subpopulations.genomes;
+    gens = gens[!gens.isNullGenome];
+    
+    mutSampleSize = rdunif(1, min=0, max=muts.size());
+    mutSample = sample(muts, mutSampleSize, replace=F);
+    genSampleSize = rdunif(1, min=0, max=gens.size());
+    genSample = sample(gens, genSampleSize, replace=F);
+    
+    if (runif(1) < 0.9)
+    {
+        // remove a randomly chosen mutation from a random set of genomes
+        if (runif(1) < 0.1)
+        {
+            // doing a substitution, so we need to remove from all genomes
+            gens.removeMutations(mutSample, substitute=T);
+        }
+        else
+        {
+            // not doing a substitution, so remove from a sample of genomes
+            genSample.removeMutations(mutSample, substitute=F);
+        }
+    }
+    else
+    {
+        // add a randomly chosen mutation to a random set of genomes
+        genSample.addMutations(mutSample);
+    }
 }
 250 late() { cat("\nTotal mutation frequencies: " + sum(sim.mutationFrequencies(NULL)) + "\n"); }

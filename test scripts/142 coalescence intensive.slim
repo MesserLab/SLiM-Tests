@@ -3,28 +3,29 @@
 // Test that coalescence detection works and that coalescence occurs
 //
 initialize() {
-	initializeTreeSeq(simplificationRatio=0.0, checkCoalescence=T);
-	initializeMutationRate(0);
-	initializeMutationType("m1", 0.5, "f", 0.0);
-	initializeGenomicElementType("g1", m1, 1.0);
-	initializeGenomicElement(g1, 0, 1e8-1);
-	initializeRecombinationRate(1e-8);
+    initializeTreeSeq(simplificationRatio=0.0, checkCoalescence=T);
+    initializeMutationRate(0);
+    initializeMutationType("m1", 0.5, "f", 0.0);
+    initializeGenomicElementType("g1", m1, 1.0);
+    initializeGenomicElement(g1, 0, 1e8-1);
+    initializeRecombinationRate(1e-8);
 }
 1 late() {
-	sim.addSubpop("p1", 100);
+    sim.addSubpop("p1", 100);
 }
 2:4 {
-	sim.treeSeqRememberIndividuals(p1.individuals);
+    sim.treeSeqRememberIndividuals(p1.individuals);
 }
 1: late() {
-	if (sim.treeSeqCoalesced())
-	{
-		catn("Coalescence generation: " + sim.generation);
-		if (exists("community"))
-			community.simulationFinished();
-		else
-			sim.simulationFinished();	}
+    if (sim.treeSeqCoalesced())
+    {
+        catn("Coalescence generation: " + sim.generation);
+        if (exists("community"))
+            community.simulationFinished();
+        else
+            sim.simulationFinished();
+    }
 }
 10000 late() {
-	catn("Coalescence generation: FAILED");
+    catn("Coalescence generation: FAILED");
 }

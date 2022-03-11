@@ -12,13 +12,13 @@ initialize() {
    initializeRecombinationRate(6.32e-6);
 }
 1 late() {
-	// use a path that works on both of my machines
-	// would be nice to use fileExists(), but it does not yet exist
-	path = "/Users/bch59/Desktop/SLiM test suite LOCAL/bigmixed burnin/burnin_bigmixed_200000_output.txt";
-	x = readFile(path);
-	if (isNULL(x))
-		path = "/Users/bhaller/Documents/Research/MesserLab/SLiM test suite/bigmixed burnin/burnin_bigmixed_200000_output.txt";
-	
+    // use a path that works on both of my machines
+    // would be nice to use fileExists(), but it does not yet exist
+    path = "/Users/bch59/Desktop/SLiM test suite LOCAL/bigmixed burnin/burnin_bigmixed_200000_output.txt";
+    x = readFile(path);
+    if (isNULL(x))
+        path = "/Users/bhaller/Documents/Research/MesserLab/SLiM test suite/bigmixed burnin/burnin_bigmixed_200000_output.txt";
+    
    sim.readFromPopulationFile(path);
    sim.generation = 200000;
 }

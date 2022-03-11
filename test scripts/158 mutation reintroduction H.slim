@@ -3,74 +3,74 @@
 // Reintroducing mutations that have been lost, with a mutation() callback
 //
 initialize() {
-	initializeMutationRate(1e-7);
-	initializeMutationType("m1", 1.0, "f", 0.0);
-	initializeMutationType("m2", 0.5, "f", 0.0);
-	m2.color = "red";
-	initializeGenomicElementType("g1", m1, 1.0);
-	initializeGenomicElement(g1, 0, 99999);
-	initializeRecombinationRate(0);
+    initializeMutationRate(1e-7);
+    initializeMutationType("m1", 1.0, "f", 0.0);
+    initializeMutationType("m2", 0.5, "f", 0.0);
+    m2.color = "red";
+    initializeGenomicElementType("g1", m1, 1.0);
+    initializeGenomicElement(g1, 0, 99999);
+    initializeRecombinationRate(0);
 }
 1 {
-	sim.addSubpop("p1", 500);
-	p1.setCloningRate(1.0);
+    sim.addSubpop("p1", 500);
+    p1.setCloningRate(1.0);
 }
 
 5000 early() {
-	// remember the mutations segregating at generation 5000 forever
-	defineConstant("MUT", sim.mutations);
-	MUT.setMutationType(m2);
-	MUT.setSelectionCoeff(0.1);
+    // remember the mutations segregating at generation 5000 forever
+    defineConstant("MUT", sim.mutations);
+    MUT.setMutationType(m2);
+    MUT.setSelectionCoeff(0.1);
 }
 
 late() {
-	// remove any new mutations added to the disabled diploid genomes
-	sim.subpopulations.individuals.genome2.removeMutations();
-	
-	// remove mutations in the haploid genomes that have fixed
-	muts = sim.mutations;
-	freqs = sim.mutationFrequencies(NULL, muts);
-	if (any(freqs == 0.5))
-		sim.subpopulations.genomes.removeMutations(muts[freqs == 0.5], T);
+    // remove any new mutations added to the disabled diploid genomes
+    sim.subpopulations.individuals.genome2.removeMutations();
+    
+    // remove mutations in the haploid genomes that have fixed
+    muts = sim.mutations;
+    freqs = sim.mutationFrequencies(NULL, muts);
+    if (any(freqs == 0.5))
+        sim.subpopulations.genomes.removeMutations(muts[freqs == 0.5], T);
 }
 
 5001: mutation(m1) {
-	// re-introduce a lost mutation from MUT if one matches in position
-	match = MUT[MUT.position == mut.position];
-	if (size(match))
-	{
-		match = match[0];
-		if (!match.isSegregating & !match.isFixed)
-		{
-			//print(sim.generation + ": MATCH!");
-			return match;
-		}
-	}
-	
-	return T;
+    // re-introduce a lost mutation from MUT if one matches in position
+    match = MUT[MUT.position == mut.position];
+    if (size(match))
+    {
+        match = match[0];
+        if (!match.isSegregating & !match.isFixed)
+        {
+            //print(sim.generation + ": MATCH!");
+            return match;
+        }
+    }
+    
+    return T;
 }
 25000 late() {
-	MUTsize = size(MUT);
-	numSeg = sum(MUT.isSegregating);
-	numFix = sum(MUT.isFixed);
-	
-	catn("size(MUT): " + MUTsize);
-	catn("Segregating count: " + numSeg);
-	catn("Fixed count: " + numFix);
-	catn("Lost count: " + (MUTsize - (numSeg + numFix)));
-	
-	catn();
-	
-	MUTfixed = MUT[MUT.isFixed];
-	MUTlost = MUT[!MUT.isSegregating & !MUT.isFixed];
-	MUTseg = MUT[MUT.isSegregating];
-	
-	catn("Fixed frequencies: " + paste(sim.mutationFrequencies(NULL, MUTfixed)));
-	catn();
-	catn("Lost frequencies: " + paste(sim.mutationFrequencies(NULL, MUTlost)));
-	catn();
-	catn("Segregating frequencies: " + paste(sim.mutationFrequencies(NULL, MUTseg)));
-	
-	catn();
-	catn("Total mutation frequencies: " + sum(sim.mutationFrequencies(NULL, MUT)));
+    MUTsize = size(MUT);
+    numSeg = sum(MUT.isSegregating);
+    numFix = sum(MUT.isFixed);
+    
+    catn("size(MUT): " + MUTsize);
+    catn("Segregating count: " + numSeg);
+    catn("Fixed count: " + numFix);
+    catn("Lost count: " + (MUTsize - (numSeg + numFix)));
+    
+    catn();
+    
+    MUTfixed = MUT[MUT.isFixed];
+    MUTlost = MUT[!MUT.isSegregating & !MUT.isFixed];
+    MUTseg = MUT[MUT.isSegregating];
+    
+    catn("Fixed frequencies: " + paste(sim.mutationFrequencies(NULL, MUTfixed)));
+    catn();
+    catn("Lost frequencies: " + paste(sim.mutationFrequencies(NULL, MUTlost)));
+    catn();
+    catn("Segregating frequencies: " + paste(sim.mutationFrequencies(NULL, MUTseg)));
+    
+    catn();
+    catn("Total mutation frequencies: " + sum(sim.mutationFrequencies(NULL, MUT)));
 }

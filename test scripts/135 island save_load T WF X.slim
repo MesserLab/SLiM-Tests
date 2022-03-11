@@ -3,46 +3,46 @@
 // Test .trees file save/load (complex subpops)
 //
 initialize() {
-	defineConstant("seed", getSeed());
-	initializeTreeSeq();
-	initializeSex("X");
-	initializeMutationRate(1e-7);
-	initializeMutationType("m1", 0.5, "f", 0.0);
-	initializeGenomicElementType("g1", m1, 1.0);
-	initializeGenomicElement(g1, 0, 99999);
-	initializeRecombinationRate(1e-8);
+    defineConstant("seed", getSeed());
+    initializeTreeSeq();
+    initializeSex("X");
+    initializeMutationRate(1e-7);
+    initializeMutationType("m1", 0.5, "f", 0.0);
+    initializeGenomicElementType("g1", m1, 1.0);
+    initializeGenomicElement(g1, 0, 99999);
+    initializeRecombinationRate(1e-8);
 }
 1 {
-	subpopCount = 10;
-	for (i in 1:subpopCount)
-		sim.addSubpop(i, 100);
-	for (i in 2:subpopCount)
-		sim.subpopulations[i-1].setMigrationRates(i-1, 0.2);
-	for (i in 1:(subpopCount-1))
-		sim.subpopulations[i-1].setMigrationRates(i+1, 0.05);
-	sim.setValue("iter", 0);
+    subpopCount = 10;
+    for (i in 1:subpopCount)
+        sim.addSubpop(i, 100);
+    for (i in 2:subpopCount)
+        sim.subpopulations[i-1].setMigrationRates(i-1, 0.2);
+    for (i in 1:(subpopCount-1))
+        sim.subpopulations[i-1].setMigrationRates(i+1, 0.05);
+    sim.setValue("iter", 0);
 }
 1000 late() {
-	catn("SAVING...");
-	sim.treeSeqOutput("/tmp/slim_trees_test_text", _binary=F);
-	setSeed(seed + 1);
+    catn("SAVING...");
+    sim.treeSeqOutput("/tmp/slim_trees_test_text", _binary=F);
+    setSeed(seed + 1);
 }
 1500 late() {
-	s = sum(sim.mutationCounts(NULL) + sim.substitutions.size());
-	catn("s == " + s);
-	if (sim.getValue("iter") == 0)
-	{
-		catn("RESTARTING...");
-		sim.setValue("s", s);
-		sim.setValue("iter", 1);
-		sim.readFromPopulationFile("/tmp/slim_trees_test_text");
-		setSeed(seed + 1);
-	}
-	else
-	{
-		if (s == sim.getValue("s"))
-			catn("### " + s + " ###");
-		else
-			catn("### NOT EQUAL ###");
-	}
+    s = sum(sim.mutationCounts(NULL) + sim.substitutions.size());
+    catn("s == " + s);
+    if (sim.getValue("iter") == 0)
+    {
+        catn("RESTARTING...");
+        sim.setValue("s", s);
+        sim.setValue("iter", 1);
+        sim.readFromPopulationFile("/tmp/slim_trees_test_text");
+        setSeed(seed + 1);
+    }
+    else
+    {
+        if (s == sim.getValue("s"))
+            catn("### " + s + " ###");
+        else
+            catn("### NOT EQUAL ###");
+    }
 }

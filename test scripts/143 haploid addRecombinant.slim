@@ -4,38 +4,38 @@
 //
 
 initialize() {
-	initializeSLiMModelType("nonWF");
-	defineConstant("K", 500);	// carrying capacity
-	initializeMutationType("m1", 0.5, "f", 0.0);
-	initializeGenomicElementType("g1", m1, 1.0);
-	initializeGenomicElement(g1, 0, 99999);
-	initializeMutationRate(1e-7);
-	initializeRecombinationRate(1e-8);
+    initializeSLiMModelType("nonWF");
+    defineConstant("K", 500);   // carrying capacity
+    initializeMutationType("m1", 0.5, "f", 0.0);
+    initializeGenomicElementType("g1", m1, 1.0);
+    initializeGenomicElement(g1, 0, 99999);
+    initializeMutationRate(1e-7);
+    initializeRecombinationRate(1e-8);
 }
 reproduction() {
-	subpop.addRecombinant(genome1, NULL, NULL, NULL, NULL, NULL);
+    subpop.addRecombinant(genome1, NULL, NULL, NULL, NULL, NULL);
 }
 1 early() {
-	if (version(F)[1] > 3.6999)
-	{
-		sim.addSubpop("p1", 500, haploid=T);
-		m1.convertToSubstitution=T;
-		sim.deregisterScriptBlock(s1);
-	}
-	else
-	{
-		sim.addSubpop("p1", 500);
-	}
+    if (version(F)[1] > 3.6999)
+    {
+        sim.addSubpop("p1", 500, haploid=T);
+        m1.convertToSubstitution=T;
+        sim.deregisterScriptBlock(s1);
+    }
+    else
+    {
+        sim.addSubpop("p1", 500);
+    }
 }
 early() {
-	p1.fitnessScaling = K / p1.individualCount;
+    p1.fitnessScaling = K / p1.individualCount;
 }
 s1 late() {
-	// remove neutral mutations in the haploid genomes that have fixed
-	muts = sim.mutationsOfType(m1);
-	freqs = sim.mutationFrequencies(NULL, muts);
-	
-	if (sum(freqs == 0.5))
-		sim.subpopulations.genomes.removeMutations(muts[freqs == 0.5], T);
+    // remove neutral mutations in the haploid genomes that have fixed
+    muts = sim.mutationsOfType(m1);
+    freqs = sim.mutationFrequencies(NULL, muts);
+    
+    if (sum(freqs == 0.5))
+        sim.subpopulations.genomes.removeMutations(muts[freqs == 0.5], T);
 }
 50000 late() { catn("Fixed mutations: " + sim.substitutions.size() + " fixed"); }

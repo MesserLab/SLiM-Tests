@@ -3,15 +3,15 @@
 // A test script for selfing
 //
 initialize() {
-	initializeMutationRate(1e-7);
-	initializeMutationType("m1", 0.5, "f", 0.0);
-	initializeGenomicElementType("g1", m1, 1.0);
-	initializeGenomicElement(g1, 0, 1e5-1);
-	initializeRecombinationRate(1e-8);
+    initializeMutationRate(1e-7);
+    initializeMutationType("m1", 0.5, "f", 0.0);
+    initializeGenomicElementType("g1", m1, 1.0);
+    initializeGenomicElement(g1, 0, 1e5-1);
+    initializeRecombinationRate(1e-8);
 }
 1 {
-	sim.addSubpop("p1", 5000);
-	
-	p1.setSelfingRate(1.0);
+    sim.addSubpop("p1", 5000);
+    
+    p1.setSelfingRate(1.0);
 }
 20000 late() { cat("\nTotal mutation frequencies: " + sum(sim.mutationFrequencies(NULL)) + "\n"); }
