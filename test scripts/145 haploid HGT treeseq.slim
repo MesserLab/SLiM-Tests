@@ -67,7 +67,9 @@ early() {
 	{
 		sim.treeSeqOutput("/tmp/slim_test_145.trees");
 		catn("Generation " + sim.generation + ": " + sum(freqs == FIX_F) + " fixed.");
-		sim.simulationFinished();
-	}
+		if (exists("community"))
+			community.simulationFinished();
+		else
+			sim.simulationFinished();	}
 }
 1000 late() { catn("Generation " + sim.generation + ": no result."); }

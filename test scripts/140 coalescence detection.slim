@@ -17,8 +17,10 @@ initialize() {
 	if (sim.treeSeqCoalesced())
 	{
 		catn("Coalescence generation: " + sim.generation);
-		sim.simulationFinished();
-	}
+		if (exists("community"))
+			community.simulationFinished();
+		else
+			sim.simulationFinished();	}
 }
 10000 late() {
 	catn("Coalescence generation: FAILED");
