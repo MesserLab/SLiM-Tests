@@ -20,7 +20,10 @@ reproduction() {
 	{
 		sim.addSubpop("p1", 500, haploid=T);
 		m1.convertToSubstitution=T;
-		sim.deregisterScriptBlock(s1);
+		if (exists("community"))
+			community.deregisterScriptBlock(s1);
+		else
+			sim.deregisterScriptBlock(s1);
 	}
 	else
 	{
