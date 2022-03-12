@@ -232,31 +232,38 @@ run_test <- function(test_name, test_versions, replicates=1, force_run=FALSE, pr
 					else
 						pattern <- NA
 					patterns <- c(patterns, pattern)
-					
-					mutrun_find <- grep("^// Override mutation run count: (.*)$", outlines, value=T)
+					mutrun_find <- grep("// Mutation run experiments disabled since the chromosome is very short", outlines, value=T)
 					if (length(mutrun_find) > 0)
 					{
-						mutrun <- gsub("^// Override mutation run count: (.*)$", "\\1", mutrun_find)
+						mutrun <- 1
 					}
 					else
 					{
-						mutrun_find <- grep("^//    mutrun_count_ = (.*)$", outlines, value=T)
+						mutrun_find <- grep("^// Override mutation run count: (.*)$", outlines, value=T)
 						if (length(mutrun_find) > 0)
-							mutrun <- gsub("^//    mutrun_count_ = (.*)$", "\\1", mutrun_find)
+						{
+							mutrun <- gsub("^// Override mutation run count: (.*)$", "\\1", mutrun_find)
+						}
 						else
 						{
-							mutrun_find <- grep("^// Mutation run modal count: ([0-9]+) .*$", outlines, value=T)
+							mutrun_find <- grep("^//    mutrun_count_ = (.*)$", outlines, value=T)
 							if (length(mutrun_find) > 0)
-								mutrun <- gsub("^// Mutation run modal count: ([0-9]+) .*$", "\\1", mutrun_find)
+								mutrun <- gsub("^//    mutrun_count_ = (.*)$", "\\1", mutrun_find)
 							else
 							{
-								mutrun_find <- grep("^// Override mutation run count = ([0-9]+),.*$", outlines, value=T)
+								mutrun_find <- grep("^// Mutation run modal count: ([0-9]+) .*$", outlines, value=T)
 								if (length(mutrun_find) > 0)
-								{
-									mutrun <- gsub("^// Override mutation run count = ([0-9]+),.*$", "\\1", mutrun_find)
-								}
+									mutrun <- gsub("^// Mutation run modal count: ([0-9]+) .*$", "\\1", mutrun_find)
 								else
-									mutrun <- NA
+								{
+									mutrun_find <- grep("^// Override mutation run count = ([0-9]+),.*$", outlines, value=T)
+									if (length(mutrun_find) > 0)
+									{
+										mutrun <- gsub("^// Override mutation run count = ([0-9]+),.*$", "\\1", mutrun_find)
+									}
+									else
+										mutrun <- NA
+								}
 							}
 						}
 					}
