@@ -10,7 +10,7 @@ initialize() {
 	initializeGenomicElement(g1, 0, 99999);
 	initializeRecombinationRate(1e-8);
 }
-1 { sim.addSubpop("p1", 1000); }
+1 early() { sim.addSubpop("p1", 1000); }
 2000:4999 fitness(m2) { return 1.0; }
 12000:14999 fitness(m2) { return relFitness * 2.0; }   // no dominance accounting, so causes logjam
 20000 late() { cat("\nTotal mutation frequencies: " + sum(sim.mutationFrequencies(NULL)) + "\n"); }

@@ -22,7 +22,7 @@ initialize() {
 	sim.readFromPopulationFile(path);
 	sim.generation = 200000;
 }
-1: {
+1: early() {
 	if (sim.generation % 100 == 0) cat(sim.generation + "...\n");
 }
 201000 late() { cat("\nTotal mutation frequencies: " + sum(sim.mutationFrequencies(NULL)) + "\n"); }

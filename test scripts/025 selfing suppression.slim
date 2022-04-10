@@ -9,7 +9,7 @@ initialize() {
 	initializeGenomicElement(g1, 0, 99999);
 	initializeRecombinationRate(1e-7);
 }
-1 { sim.addSubpop("p1", 50); }
+1 early() { sim.addSubpop("p1", 50); }
 modifyChild()
 {
 	// prevent hermaphroditic selfing; don't use parent1==parent2 since that was added after SLiM 2.0

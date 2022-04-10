@@ -13,7 +13,7 @@ initialize() {
 	rates = runif(1000, 1e-9, 1e-7);
 	initializeRecombinationRate(rates, ends);
 }
-1 {
+1 early() {
 	sim.addSubpop("p1", 1000);
 }
 20000 late() { cat("\nTotal mutation frequencies: " + sum(sim.mutationFrequencies(NULL)) + "\n"); }

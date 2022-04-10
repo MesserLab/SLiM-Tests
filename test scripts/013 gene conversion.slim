@@ -18,7 +18,7 @@ initialize() {
 	else
 		initializeGeneConversion(0.2, 25, 1.0);
 }
-1 {
+1 early() {
 	sim.addSubpop("p1", 1000);
 }
 20000 late() { cat("\nTotal mutation frequencies: " + sum(sim.mutationFrequencies(NULL)) + "\n"); }

@@ -10,7 +10,7 @@ initialize() {
 	initializeGenomicElement(g1, 0, 1e5-1);
 	initializeRecombinationRate(1e-7);
 }
-1 {
+1 early() {
 	sim.addSubpop("p1", 3000);
 }
 20000 late() { cat("\nTotal mutation frequencies: " + sum(sim.mutationFrequencies(NULL)) + "\n"); }

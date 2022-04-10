@@ -12,7 +12,7 @@ initialize() {
 	initializeGenomicElement(g1, 0, L-1);
 	initializeRecombinationRate(1e-6);
 }
-1 {
+1 early() {
 	sim.addSubpop("p1", N);
 	p1.setSexRatio(0.1);
 }

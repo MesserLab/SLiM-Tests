@@ -14,7 +14,7 @@ initialize() {
 	initializeGenomicElement(g1, 0, L-1);
 	initializeRecombinationRate(0);
 }
-1 {
+1 early() {
 	sim.addSubpop("p1", N);
 	p1.setCloningRate(1.0);
 }

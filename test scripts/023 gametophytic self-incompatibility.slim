@@ -13,7 +13,7 @@ initialize() {
 	initializeGenomicElement(g1, 21001, 99999);
 	initializeRecombinationRate(1e-8);
 }
-1 { sim.addSubpop("p1", 500); }
+1 early() { sim.addSubpop("p1", 500); }
 modifyChild(p1) {
 	pollenSMuts = childGenome2.mutationsOfType(m2);
 	styleSMuts1 = parent1Genome1.mutationsOfType(m2);

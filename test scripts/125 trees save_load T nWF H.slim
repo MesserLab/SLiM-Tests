@@ -51,7 +51,7 @@ reproduction() {
 	sim.subpopulations.individuals.setSpatialPosition(p1.pointUniform(100));
 	sim.setValue("iter", 0);
 }
-2: {
+2: early() {
 	ind = sample(sim.subpopulations.individuals, 1);
 	sim.treeSeqRememberIndividuals(ind);
 }
