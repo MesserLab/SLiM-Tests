@@ -32,7 +32,7 @@ initialize() {
 		inds.tagF = sapply(inds, "sum(applyValue.genomes.mutationsOfType(m2).selectionCoeff);");
 	
 	// evaluate interactions
-	i1.evaluate();
+	i1.evaluate(sim.subpopulations);
 }
 fitness(m2) {      // make QTLs intrinsically neutral
 	return 1.0;

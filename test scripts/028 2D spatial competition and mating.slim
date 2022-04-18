@@ -25,8 +25,8 @@ initialize() {
 		ind.setSpatialPosition(p1.pointUniform());
 }
 1: late() {
-	i1.evaluate();
-	i2.evaluate();
+	i1.evaluate(sim.subpopulations);
+	i2.evaluate(sim.subpopulations);
 }
 fitness(NULL) {
 	totalStrength = i1.totalOfNeighborStrengths(individual);

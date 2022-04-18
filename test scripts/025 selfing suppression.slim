@@ -13,8 +13,16 @@ initialize() {
 modifyChild()
 {
 	// prevent hermaphroditic selfing; don't use parent1==parent2 since that was added after SLiM 2.0
-	if ((parent1Genome1 == parent2Genome1) & (parent1Genome2 == parent2Genome2))
-		return F;
+	if (exists("parent1"))
+	{
+		if (parent1 == parent2)
+			return F;
+	}
+	else
+	{
+		if ((parent1Genome1 == parent2Genome1) & (parent1Genome2 == parent2Genome2))
+			return F;
+	}
 	return T;
 }
 500000 late() { cat("\nTotal mutation frequencies: " + sum(sim.mutationFrequencies(NULL)) + "\n"); }

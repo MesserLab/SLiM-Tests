@@ -80,7 +80,7 @@ reproduction() {
 	}
 }
 early() {
-	i1.evaluate();
+	i1.evaluate(sim.subpopulations);
 	
 	// spatial competition provides density-dependent selection
 	for (subpop in c(p1,p2))
@@ -92,5 +92,5 @@ early() {
 	}
 }
 late() {
-	i2.evaluate();
+	i2.evaluate(sim.subpopulations);
 }

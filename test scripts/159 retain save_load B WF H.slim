@@ -68,8 +68,8 @@ initialize() {
 	}
 }
 late() {
-	i1.evaluate();
-	i2.evaluate();
+	i1.evaluate(sim.subpopulations);
+	i2.evaluate(sim.subpopulations);
 }
 fitness(NULL) {
 	// spatial competition
