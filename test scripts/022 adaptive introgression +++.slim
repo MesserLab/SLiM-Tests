@@ -30,7 +30,8 @@ initialize() {
 	if (sim.countOfMutationsOfType(m2) == 0)
 	{
 		fixed = (sum(sim.substitutions.mutationType == m2) == 1);
-		cat(ifelse(fixed, "Outcome: FIXED ", "Outcome: LOST ") + sim.generation + "\n");
+		time = exists("community") ? sim.cycle else sim.generation;
+		cat(ifelse(fixed, "Outcome: FIXED ", "Outcome: LOST ") + time + "\n");
 		if (exists("community"))
 			community.simulationFinished();
 		else

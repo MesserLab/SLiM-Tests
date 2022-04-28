@@ -24,7 +24,8 @@ initialize() {
 	p3.setMigrationRates(c(p1, p2), c(0.78e-5, 3.11e-5));
 }
 57080:58000 early() {
-	t = sim.generation - 57080;
+	time = exists("community") ? sim.cycle else sim.generation;
+	t = time - 57080;
 	p2_size = round(103.2 * exp(0.0038 * t));
 	p3_size = round(55.4 * exp(0.0048 * t));
 	p2.setSubpopulationSize(asInteger(p2_size));

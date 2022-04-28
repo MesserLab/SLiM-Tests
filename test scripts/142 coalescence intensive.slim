@@ -19,7 +19,8 @@ initialize() {
 1: late() {
 	if (sim.treeSeqCoalesced())
 	{
-		catn("Coalescence generation: " + sim.generation);
+		time = exists("community") ? sim.cycle else sim.generation;
+		catn("Coalescence generation: " + time);
 		if (exists("community"))
 			community.simulationFinished();
 		else

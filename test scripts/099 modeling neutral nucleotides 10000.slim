@@ -44,12 +44,12 @@ initialize() {
 	// nucleotide fixed at each locus in the chromosome
 	geTypes = sim.chromosome.genomicElements.genomicElementType;
 	
-	if (isNULL(version()))  // backward compatibility
+	if (isNULL(version(F)))  // backward compatibility
 		mutTypes = apply(geTypes, "sample(applyValue.mutationTypes, 1, weights=applyValue.mutationFractions);");
 	else
 		mutTypes = sapply(geTypes, "sample(applyValue.mutationTypes, 1, weights=applyValue.mutationFractions);");
 	
-	if (isNULL(version()))
+	if (isNULL(version(F)))
 	{
 		// don't rely on vectorized addNewDrawnMutation()...
 		g = p1.genomes;
@@ -72,7 +72,7 @@ initialize() {
 	// this runs only in 2: - it is assumed the gen. 1 setup is uniqued
 	allMuts = sim.mutations;
 	if (exists("community"))
-		isNew = allMuts.originTick == sim.generation;
+		isNew = allMuts.originTick == sim.cycle;
 	else
 		isNew = allMuts.originGeneration == sim.generation;
 	newMuts = allMuts[isNew];

@@ -26,7 +26,7 @@ initialize() {
 	// construct phenotypes from the additive effects of QTLs
 	inds = sim.subpopulations.individuals;
 	
-	if (isNULL(version()))  // backward compatibility
+	if (isNULL(version(F)))  // backward compatibility
 		inds.tagF = apply(inds, "sum(applyValue.genomes.mutationsOfType(m2).selectionCoeff);");
 	else
 		inds.tagF = sapply(inds, "sum(applyValue.genomes.mutationsOfType(m2).selectionCoeff);");
@@ -52,13 +52,14 @@ fitness(NULL) {    // phenotypic competition
 	return 1.0 - totalStrength / p1.individualCount;
 }
 1:200 late() {
-	if (sim.generation == 1)
+	time = exists("community") ? sim.cycle else sim.generation;
+	if (time == 1)
 		cat("  gen    mean      sd\n");
 	
-	if (sim.generation % 10 == 1)
+	if (time % 10 == 1)
 	{
 		tags = p1.individuals.tagF;
-		cat(format("%5d  ", sim.generation));
+		cat(format("%5d  ", time));
 		cat(format("%6.2f  ", mean(tags)));
 		cat(format("%6.2f\n", sd(tags)));
 	}

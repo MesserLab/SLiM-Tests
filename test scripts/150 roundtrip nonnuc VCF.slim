@@ -41,9 +41,12 @@ initialize() {
 		sim.setValue("s", s);
 		sim.setValue("iter", 1);
 		p2.genomes.readFromVCF("/tmp/slim_test_roundtrip_VCF.txt", m1);
-		sim.generation = 3000;
-		if (exists("community"))
+		if (exists("community")) {
 			community.tick = 3000;
+			sim.cycle = 3000;
+		} else {
+			sim.generation = 3000;
+		}
 		setSeed(seed + 1);
 	}
 	else

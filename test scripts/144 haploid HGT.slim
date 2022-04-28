@@ -64,11 +64,15 @@ early() {
 	
 	if (all(freqs == FIX_F))
 	{
-		catn("Generation " + sim.generation + ": " + sum(freqs == FIX_F) + " fixed.");
+		time = exists("community") ? sim.cycle else sim.generation;
+		catn("Generation " + time + ": " + sum(freqs == FIX_F) + " fixed.");
 		if (exists("community"))
 			community.simulationFinished();
 		else
 			sim.simulationFinished();
 	}
 }
-1000 late() { catn("Generation " + sim.generation + ": no result."); }
+1000 late() {
+	time = exists("community") ? sim.cycle else sim.generation;
+	catn("Generation " + time + ": no result.");
+}

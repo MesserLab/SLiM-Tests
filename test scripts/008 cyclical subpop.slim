@@ -13,7 +13,8 @@ initialize() {
 	sim.addSubpop("p1", 2000);
 }
 early() {
-	newSize = cos((sim.generation - 1) / 100) * 500 + 1500;
+	time = exists("community") ? sim.cycle else sim.generation;
+	newSize = cos((time - 1) / 100) * 500 + 1500;
 	p1.setSubpopulationSize(asInteger(newSize));
 }
 10000 late() { cat("\nTotal mutation frequencies: " + sum(sim.mutationFrequencies(NULL)) + "\n"); }
