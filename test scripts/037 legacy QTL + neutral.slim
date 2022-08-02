@@ -79,15 +79,15 @@ initialize() {
 	else
 		inds.tag = sapply(inds, "asInteger(sum(applyValue.genomes.mutationsOfType(m2).selectionCoeff));");
 }
-fitness(m2) {
+mutationEffect(m2) {
 	// the QTLs themselves are neutral; their effect is handled below
 	return 1.0;
 }
-fitness(m3, p1) {
+mutationEffect(m3, p1) {
 	// optimum of +10
 	return 1.0 + dnorm(10.0 - individual.tag, 0.0, 5.0);
 }
-fitness(m3, p2) {
+mutationEffect(m3, p2) {
 	// optimum of -10
 	return 1.0 + dnorm(-10.0 - individual.tag, 0.0, 5.0);
 }

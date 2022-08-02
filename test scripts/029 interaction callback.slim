@@ -34,10 +34,10 @@ initialize() {
 	// evaluate interactions
 	i1.evaluate(sim.subpopulations);
 }
-fitness(m2) {      // make QTLs intrinsically neutral
+mutationEffect(m2) {      // make QTLs intrinsically neutral
 	return 1.0;
 }
-fitness(NULL) {    // reward proximity to the optimum
+fitnessEffect() {    // reward proximity to the optimum
 	return 1.0 + dnorm(optimum - individual.tagF, mean=0.0, sd=sigma_K);
 }
 interaction(i1) {
@@ -47,7 +47,7 @@ interaction(i1) {
 	return dnorm(exerter.tagF, mean=receiver.tagF, sd=sigma_C) /
 		dnorm(0.0, mean=0, sd=sigma_C);
 }
-fitness(NULL) {    // phenotypic competition
+fitnessEffect() {    // phenotypic competition
 	totalStrength = sum(i1.strength(individual));
 	return 1.0 - totalStrength / p1.individualCount;
 }

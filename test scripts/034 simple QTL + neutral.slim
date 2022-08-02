@@ -68,15 +68,15 @@ initialize() {
 	inds = sim.subpopulations.individuals;
 	inds.tagF = inds.sumOfMutationsOfType(m2);
 }
-fitness(m2) {
+mutationEffect(m2) {
 	// the QTLs themselves are neutral; their effect is handled below
 	return 1.0;
 }
-fitness(NULL, p1) {
+fitnessEffect(p1) {
 	// optimum of +10
 	return 1.0 + dnorm(10.0 - individual.tagF, 0.0, 5.0);
 }
-fitness(NULL, p2) {
+fitnessEffect(p2) {
 	// optimum of -10
 	return 1.0 + dnorm(-10.0 - individual.tagF, 0.0, 5.0);
 }

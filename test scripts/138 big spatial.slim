@@ -19,7 +19,7 @@ initialize() {
 1: late() {
 	i1.evaluate(sim.subpopulations);
 }
-fitness(NULL) {
+fitnessEffect() {
 	totalStrength = i1.totalOfNeighborStrengths(individual);
 	return 1.1 - totalStrength / p1.individualCount;
 }

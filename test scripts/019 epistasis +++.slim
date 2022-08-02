@@ -21,20 +21,20 @@ initialize() {
 }
 1 early() { sim.addSubpop("p1", 1000); }
 // we use callbacks for both mutation types in this test to make the model's runtime symmetric
-fitness(m2) {
+mutationEffect(m2) {
 	if (individual.genome1.countOfMutationsOfType(m3))
 		return 0.5;
 	else if (individual.genome2.countOfMutationsOfType(m3))
 		return 0.5;
 	else
-		return relFitness;
+		return effect;
 }
-fitness(m3) {
+mutationEffect(m3) {
 	if (individual.genome1.countOfMutationsOfType(m2))
 		return 0.5;
 	else if (individual.genome2.countOfMutationsOfType(m2))
 		return 0.5;
 	else
-		return relFitness;
+		return effect;
 }
 5000 late() { cat("\nTotal mutation frequencies: " + sum(sim.mutationFrequencies(NULL)) + "\n"); }

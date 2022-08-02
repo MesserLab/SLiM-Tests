@@ -44,7 +44,8 @@ versions <- versions[(length(versions) - 3) : length(versions)]
 versions
 
 # Add a specific version back in for comparison
-versions <- c("slim3.6", versions)
+versions <- c("slim3.7.1", versions)
+#versions <- c("slim3.6", versions)
 #versions <- c("slim3.5", versions)
 #versions <- c("slim3.4", versions)
 #versions <- c("slim3.3", versions)
@@ -74,11 +75,10 @@ versions
 actually_run_test <- function(test_name, test_versions, replicates=1, force_run=FALSE)
 {
 	testfile <- paste0(tests_path, test_name, ".slim")
+	testfile_compat <- paste0(tests_path_compat, test_name, ".slim")	# SLiM 3 compatibility
 	
 	if (!file.exists(testfile))
 		return
-	
-	script <- readLines(testfile)
 	
 	for (rep in 1:replicates)
 	{
@@ -86,6 +86,14 @@ actually_run_test <- function(test_name, test_versions, replicates=1, force_run=
 		{
 			if (!file.exists(testfile))
 				break
+			
+			# some changes in SLiM 4 are basically impossible to code around for backward compatibility, so
+			# we have alternate versions of some scripts for SLiM 3 and earlier, kept in tests_path_compat
+			# here we decide which path to use for this particular run
+			scriptpath <- testfile
+			if (startsWith(version, "slim2") | startsWith(version, "slim3"))
+				if (file.exists(testfile_compat))
+					scriptpath <- testfile_compat
 			
 			versionfolder <- paste0(versions_path, version, "/")
 			
@@ -106,7 +114,7 @@ actually_run_test <- function(test_name, test_versions, replicates=1, force_run=
 			outfile <- paste0(versionfolder, "TEST ", test_name, " REP ", rep, " out.txt")
 			errfile <- paste0(versionfolder, "TEST ", test_name, " REP ", rep, " err.txt")
 			if (force_run || !file.exists(outfile))
-				system2("./slim", args=c(slim_flags, "-s", rep, shQuote(testfile)), stdout=outfile, stderr=errfile)
+				system2("./slim", args=c(slim_flags, "-s", rep, shQuote(scriptpath)), stdout=outfile, stderr=errfile)
 			
 			setwd(old_wd)
 		}
@@ -340,7 +348,7 @@ run_test <- function(test_name, test_versions, replicates=1, force_run=FALSE, pr
 	
 	# print something if results have changed, to make it easier to find those
 	output_col <- results$output
-	if (length(output_col) > 2)
+	if (length(output_col) >= 2)
 	{
 		out1 <- output_col[length(output_col) - 1]
 		out2 <- output_col[length(output_col)]
@@ -364,9 +372,11 @@ run_test <- function(test_name, test_versions, replicates=1, force_run=FALSE, pr
 			if ((mean1 / mean2 < 0.95) || (mean2 / mean1 < 0.95))	## effect size large?
 			{
 				cat("************** TIMES DIFFER SIGNIFICANTLY *************\n")
-				print(next_to_last_cpu)
-				print(last_cpu)
-				print(t.test(next_to_last_cpu, last_cpu, conf.level=0.99))
+				#print(next_to_last_cpu)
+				#print(last_cpu)
+				cat("Time ratio: ")
+				print(mean2 / mean1)
+				#print(t.test(next_to_last_cpu, last_cpu, conf.level=0.99))
 			}
 		}
 	}
@@ -379,6 +389,7 @@ run_test <- function(test_name, test_versions, replicates=1, force_run=FALSE, pr
 
 # Run all tests that have not already been run; to re-run tests, run the clean code below first
 tests_path <- path.expand("~/Desktop/SLiM-Tests/test scripts/")
+tests_path_compat <- path.expand("~/Desktop/SLiM-Tests/test scripts SLiM3/")	# backward compatibility
 tests <- list.files(tests_path, "*.slim")
 tests <- gsub("^(.*)\\.slim$", "\\1", tests)	# strip off .slim extensions
 tests
