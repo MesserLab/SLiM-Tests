@@ -36,6 +36,20 @@ versions
 # save/load, (c) fixing a bug that led to incorrect mutationCounts()/mutationFrequencies() results in
 # nonWF models, and (d) the intential non-backward-compatible change to initializeGeneConversion()
 
+# there is a puzzling discontinuity in runtimes from slim4.0.1_6_mut_tally_fix to slim4.0.1_7_parallelrepro1,
+# apparently due to the Eidos function setSymmetricDifference() suddenly becoming much slower.  There is
+# no apparent reason for this.  It appears on my 10.15.7 test machine, but does not manifest at all on
+# my more recent macOS laptop.  It affects models in the range 051 to 078.1, which use setSymmetricDifference()
+# in summarizing their results.  It does not affect any of the more realistic models.  Not worrying about it;
+# it looks like the compiler is just faffing about.
+
+# test models #34 and #37 show a discontinuity from slim4.0.1_8_parallelrepro2 to slim4.0.1_9_addCountRepro;
+# this is due to a shift in the code path taken when evolving using type 's' DFEs, which fixed a small bug.
+# So it is known, well-understood, and desirable.
+
+# the change in behavior for nearestNeighbors() for thread-safety caused a reproducibility discontinuity for
+# tests 119, 121, 123, 127, 129, and 131 because they depend upon the order in which the neighbors are returned.
+
 
 # Select a subset of versions for testing; unless you're interested in historical comparisons,
 # the last four versions generally suffices to establish discontinuities
@@ -44,7 +58,8 @@ versions <- versions[(length(versions) - 3) : length(versions)]
 versions
 
 # Add a specific version back in for comparison
-versions <- c("slim3.7.1", versions)
+versions <- c("slim4.0", versions)
+#versions <- c("slim3.7.1", versions)
 #versions <- c("slim3.6", versions)
 #versions <- c("slim3.5", versions)
 #versions <- c("slim3.4", versions)

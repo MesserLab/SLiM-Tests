@@ -1,0 +1,49 @@
+// frequencies.slim : ^.*: SUCCESS (.+)$
+//
+// Exercising mutationFrequencies() and mutationFrequenciesInGenomes()
+// This is particularly useful run under DEBUG, where the internal checkbacks
+// occur in addition to the checks done in this script.
+//
+initialize()
+{
+	initializeMutationRate(1e-6);
+	initializeMutationType("m1", 0.0, "f", 0.0);
+	initializeGenomicElementType("g1", m1, 1.0);
+	initializeGenomicElement(g1, 0, 99999);
+	initializeRecombinationRate(1e-6);
+}
+
+1 early()
+{
+	sim.addSubpop("p1", 500);
+	sim.addSubpop("p2", 500);
+}
+
+1000:3000 late()
+{
+	m = sim.mutations;
+	f1_1 = sim.mutationFrequencies(p1);
+	f2_1 = sim.mutationFrequencies(p2);
+	f3_1 = sim.mutationFrequencies(NULL);
+	f1_2 = sim.mutationFrequencies(p1, m);
+	f2_2 = sim.mutationFrequencies(p2, m);
+	f3_2 = sim.mutationFrequencies(c(p1,p2), m);
+	f1_3 = p1.genomes.mutationFrequenciesInGenomes();
+	f2_3 = p2.genomes.mutationFrequenciesInGenomes();
+	f3_3 = ((p1.genomes.mutationFrequenciesInGenomes() * 1000) + (p2.genomes.mutationFrequenciesInGenomes() * 1000)) / 2000;
+	f1_4 = p1.genomes.mutationFrequenciesInGenomes(m);
+	f2_4 = p2.genomes.mutationFrequenciesInGenomes(m);
+	f3_4 = ((p1.genomes.mutationFrequenciesInGenomes(m) * 1000) + (p2.genomes.mutationFrequenciesInGenomes(m) * 1000)) / 2000;
+	
+	s = sample(sim.subpopulations.genomes, 500, replace=F);
+	f4_1 = s.mutationFrequenciesInGenomes();
+	f4_2 = s.mutationFrequenciesInGenomes(m);
+	
+	if (any(f1_1 != f1_2) | any(f1_1 != f1_3) | any(f1_1 != f1_4)) stop();
+	if (any(f2_1 != f2_2) | any(f2_1 != f2_3) | any(f2_1 != f2_4)) stop();
+	if (any(f3_1 != f3_2) | any(f3_1 != f3_3) | any(f3_1 != f3_4)) stop();
+	if (any(f4_1 != f4_2)) stop();
+	
+	if (community.tick == 2000)
+		catn(community.tick + ": SUCCESS " + (sum(f1_4) + sum(f2_4)));
+}
