@@ -16,7 +16,7 @@ initialize() {
 	// promote individuals carrying mutations
 	// without this, the run total is usually ~150; with, ~1000
 	inds = p1.individuals;
-	inds.fitnessScaling = 0;
+	inds.fitnessScaling = 0.0;
 	
 	s = sample(inds, 5);
 	s.fitnessScaling = 0.1;
