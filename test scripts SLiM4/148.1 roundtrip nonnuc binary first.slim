@@ -1,0 +1,95 @@
+// roundtrip nonnuc binary.slim : ^### (.+) ###$
+//
+// Test round-trip file save/load (non-nucleotide, binary from outputFull())
+// this revised version tests doing the work in first() events
+//
+initialize() {
+	defineConstant("seed", getSeed());
+	initializeSLiMOptions(dimensionality="xy");
+	initializeMutationRate(1e-4);
+	initializeMutationType("m1", 0.5, "f", 0.0);
+	initializeMutationType("m2", 0.5, "e", -0.01);
+	initializeMutationType("m3", 0.5, "n", 0.05, 0.01);
+	initializeGenomicElementType("g1", c(m1,m2,m3), c(1.0,0.1,0.01));
+	initializeGenomicElement(g1, 0, 999);
+	initializeRecombinationRate(1e-7);
+	
+	// spatial competition
+	initializeInteractionType(1, "xy", reciprocal=T, maxDistance=0.3);
+	i1.setInteractionFunction("n", 3.0, 0.1);
+	
+	// spatial mate choice
+	initializeInteractionType(2, "xy", reciprocal=T, maxDistance=0.1);
+	i2.setInteractionFunction("n", 1.0, 0.02);
+}
+1 first() {
+	sim.addSubpop("p1", 200);
+	sim.addSubpop("p2", 200);
+	c(p1,p2).setSpatialBounds(c(0.0, 0.0, 1.05, 1.05));
+	p1.setCloningRate(0.15);
+	c(p1,p2).setSelfingRate(0.1);
+	p1.setMigrationRates(p2, 0.01);
+	p2.setMigrationRates(p1, 0.01);
+	sim.subpopulations.individuals.setSpatialPosition(p1.pointUniform(400));
+	sim.setValue("iter", 0);
+}
+2000 first() {
+	catn("SAVING...");
+	sim.outputFull("/tmp/slim_test_roundtrip.out", binary=T);
+	setSeed(seed + 1);
+}
+3000 first() {
+	s = sum(sim.mutationCounts(NULL));
+	catn("s == " + s);
+	if (sim.getValue("iter") == 0)
+	{
+		catn("RESTARTING...");
+		sim.setValue("s", s);
+		sim.setValue("iter", 1);
+		sim.readFromPopulationFile("/tmp/slim_test_roundtrip.out");
+		c(p1,p2).setSpatialBounds(c(0.0, 0.0, 1.05, 1.05));
+		p1.setCloningRate(0.15);
+		c(p1,p2).setSelfingRate(0.1);
+		p1.setMigrationRates(p2, 0.01);
+		p2.setMigrationRates(p1, 0.01);
+		
+		// force fitness evaluation before reproduction
+		i1.evaluate(sim.subpopulations);
+		sim.recalculateFitness();
+		
+		// needs to happen last, because fitness evaluation uses the RNG for order randomization
+		setSeed(seed + 1);
+	}
+	else
+	{
+		if (s == sim.getValue("s"))
+			catn("### " + s + " ###");
+		else
+			catn("### NOT EQUAL ###");
+	}
+}
+first() {
+	i2.evaluate(sim.subpopulations);
+}
+late() {
+	i1.evaluate(sim.subpopulations);
+}
+fitnessEffect() {
+	// spatial competition
+	totalStrength = i1.totalOfNeighborStrengths(individual);
+	return 1.1 - totalStrength / p1.individualCount;
+}
+mateChoice() {
+	// spatial mate choice
+	return i2.strength(individual);
+}
+modifyChild() {
+	// absorbing boundaries
+	pos = parent1.spatialPosition + rnorm(2, 0, 0.02);
+	if (!p1.pointInBounds(pos))
+		return F;
+	
+	child.setSpatialPosition(pos);
+	return T;
+}
+

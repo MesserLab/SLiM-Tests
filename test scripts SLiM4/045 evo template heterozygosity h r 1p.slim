@@ -1,0 +1,47 @@
+// evo template heterozygosity h r 1p.slim : ^Mean nucleotide heterozygosity: (.*)$
+//
+// One of a family of models measured by heterozygosity.  This family of models
+// varies the mode of reproduction (hermaphroditic / sexual / cloning / selfing),
+// the presence/absence of modifyChild/recombination callbacks, and the presence/
+// absence of migration, in an attempt to test all of the code branches in
+// Population::EvolveSubpopulation().
+//
+
+initialize() {
+	defineConstant("L", 1e6);
+	defineConstant("mu", 1e-6);
+	defineConstant("N", 300);
+	
+	initializeMutationRate(mu);
+	initializeMutationType("m1", 0.5, "f", 0.0);
+	initializeMutationType("m2", 0.5, "f", 0.1);
+	initializeMutationType("m3", 0.5, "f", -0.05);
+	initializeGenomicElementType("g1", c(m1,m2,m3), c(1.0,0.0001,0.1));
+	initializeGenomicElement(g1, 0, L-1);
+	initializeRecombinationRate(1e-7);
+}
+1 early() {
+	sim.addSubpop("p1", N);
+}
+recombination() {
+	return T;   // pretend we changed breakpoints
+}
+10000 late() {
+	// Estimate heterozygosity; see model 041 for comments
+	sampleSize = 100;
+	sampledIndividuals = sample(p1.individuals, sampleSize, replace=T);
+	pi_total = 0;
+	
+	for (individual in sampledIndividuals)
+	{
+		genomes = individual.genomes;
+		muts1 = genomes[0].mutations;
+		muts2 = genomes[1].mutations;
+		unshared = setSymmetricDifference(muts1, muts2);
+		individual_pi = size(unshared) / L;
+		pi_total = pi_total + individual_pi;
+	}
+	H = pi_total / sampleSize;
+	
+	cat("\nMean nucleotide heterozygosity: " + H + "\n");
+}

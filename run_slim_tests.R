@@ -10,7 +10,7 @@
 
 # What are all the SLiM versions that are available?
 versions_path <- path.expand("~/Desktop/SLiM-Tests/")
-versions <- list.files(versions_path, "slim[2-4].*", include.dirs=T)
+versions <- list.files(versions_path, "slim[2-5].*", include.dirs=T)
 versions
 
 
@@ -54,10 +54,13 @@ versions
 # Select a subset of versions for testing; unless you're interested in historical comparisons,
 # the last four versions generally suffices to establish discontinuities
 #versions <- versions[length(versions)]
-versions <- versions[(length(versions) - 3) : length(versions)]
+versions <- versions[(length(versions) - 0) : length(versions)]
 versions
 
 # Add a specific version back in for comparison
+versions <- c("slim4.3", versions)
+versions <- c("slim4.2.2", versions)
+versions <- c("slim4.1", versions)
 versions <- c("slim4.0", versions)
 #versions <- c("slim3.7.1", versions)
 #versions <- c("slim3.6", versions)
@@ -418,7 +421,7 @@ if (F)
 		run_test(test, versions, replicates=1)
 	
 	for (test in tests)
-		run_test(test, versions, replicates=10)
+		run_test(test, versions, replicates=30)
 	
 	for (test in tests)
 		run_test(test, versions, replicates=10, print_scripts=FALSE)

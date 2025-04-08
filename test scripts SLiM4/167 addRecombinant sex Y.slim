@@ -1,0 +1,34 @@
+// addRecombinant sex X.slim : ^Total mutation frequencies: (.*)$
+//
+// Test sexual nonWF models using addRecombinant()
+// This version models the Y, with treeseq
+//
+initialize() {
+	initializeSLiMModelType("nonWF");
+	initializeTreeSeq(simplificationInterval=250);
+	initializeSex("Y");
+	defineConstant("K", 500);
+	
+	initializeMutationType("m1", 0.5, "f", 0.0);
+	m1.convertToSubstitution = T;
+	
+	initializeGenomicElementType("g1", m1, 1.0);
+	initializeGenomicElement(g1, 0, 99999);
+	initializeMutationRate(1e-7);
+	initializeRecombinationRate(1e-8);
+}
+reproduction(NULL, "F") {
+	mate = subpop.sampleIndividuals(1, sex="M");
+	breaks1 = sim.chromosome.drawBreakpoints(individual);
+	if (runif(1) <= 0.5)
+		subpop.addRecombinant(NULL, NULL, NULL, NULL, NULL, NULL, "F");
+	else
+		subpop.addRecombinant(NULL, NULL, NULL, mate.genome2, NULL, NULL, "M");
+}
+1 early() {
+	sim.addSubpop("p1", 50);
+}
+early() {
+	p1.fitnessScaling = K / p1.individualCount;
+}
+20000 late() { cat("\nTotal mutation frequencies: " + sum(sim.mutationFrequencies(NULL)) + "\n"); }

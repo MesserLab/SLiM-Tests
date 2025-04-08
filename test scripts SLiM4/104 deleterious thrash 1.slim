@@ -1,0 +1,15 @@
+// deleterious thrash 1.slim : ^Total mutation frequencies: (.*)$
+//
+//
+initialize() {
+	initializeMutationRate(1e-3);
+	initializeMutationType("m1", 0.5, "f", 0.0);
+	initializeMutationType("m2", 0.5, "f", -0.1);
+	initializeGenomicElementType("g1", c(m1,m2), c(0.9, 0.1));
+	initializeGenomicElement(g1, 0, 99);
+	initializeRecombinationRate(1e-3);
+}
+1 early() {
+	sim.addSubpop("p1", 10);
+}
+100000 late() { cat("\nTotal mutation frequencies: " + sum(sim.mutationFrequencies(NULL)) + "\n"); }

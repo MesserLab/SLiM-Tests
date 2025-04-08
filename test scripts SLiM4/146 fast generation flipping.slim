@@ -1,0 +1,17 @@
+// fast generation flipping.slim : ^Total mutation frequencies: (.*)$
+//
+// Just flip through generations as fast as possible, to test overhead
+//
+initialize() {
+	initializeMutationRate(0);
+	initializeRecombinationRate(0);
+	initializeMutationType("m1", 0.5, "f", 0.0);
+	initializeGenomicElementType("g1", m1, 1.0);
+	initializeGenomicElement(g1, 0, 99999);
+}
+
+1 early() {
+	sim.addSubpop("p1", 1000);
+}
+
+5000 late() { cat("\nTotal mutation frequencies: " + sum(sim.mutationFrequencies(NULL)) + "\n"); }

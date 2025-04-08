@@ -1,0 +1,18 @@
+// intensive rare beneficials.slim : ^Total mutation frequencies: (.*)$
+//
+// A test script with rare beneficial mutations against a neutral background
+//
+initialize() {
+	initializeMutationRate(1e-5);
+	initializeMutationType("m1", 0.5, "f", 0.0);
+	initializeMutationType("m2", 0.5, "f", 0.1);
+	initializeGenomicElementType("g1", c(m1, m2), c(5000.0, 1.0));
+	initializeGenomicElement(g1, 0, 1e5-1);
+	initializeRecombinationRate(1e-5);
+}
+1 early() {
+	sim.addSubpop("p1", 500);
+}
+mutationEffect(m2)
+{ return effect * 1.01; }
+5000 late() { cat("\nTotal mutation frequencies: " + sum(sim.mutationFrequencies(NULL)) + "\n"); }

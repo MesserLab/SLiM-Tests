@@ -1,0 +1,60 @@
+// roundtrip nonnuc MS.slim : ^### (.+) ###$
+//
+// Test round-trip file save/load (non-nucleotide, text from outputMS())
+//
+
+// BEWARE: This test is known to fail tree-seq cross-check (TSXC)
+// This is because fixed mutations are not preserved across save/load with
+// readFromMS(), because it just reads state into specific genomes, not
+// across the population as a whole (because it is a method on Genme).
+// The new individuals in p2 start with empty genomes that tree-seq
+// does not consider to contain the previously fixed mutations, but SLiM
+// says those mutations are fixed for ALL genomes, so cross-check fails.
+// Perhaps empty genomes should start in tree-seq containing derived state
+// for all previously fixed mutations; see test script 143.
+
+initialize() {
+	defineConstant("seed", getSeed());
+	initializeMutationRate(1e-4);
+	initializeMutationType("m1", 0.5, "f", 0.0);
+	initializeGenomicElementType("g1", m1, 1.0);
+	initializeGenomicElement(g1, 0, 4999);
+	initializeRecombinationRate(1e-6);
+}
+1 late() {
+	sim.addSubpop("p1", 300);
+	sim.setValue("iter", 0);
+}
+3000 late() {
+	catn("SAVING...");
+	p1.genomes.outputMS("/tmp/slim_test_roundtrip_MS.txt");
+	setSeed(seed + 1);
+}
+5000 late() {
+	s = sum(sim.mutationCounts(NULL));
+	catn("s == " + s);
+	if (sim.getValue("iter") == 0)
+	{
+		catn("RESTARTING...");
+		p1.setSubpopulationSize(0);
+		sim.addSubpop("p2", 300);
+		sim.setValue("s", s);
+		sim.setValue("iter", 1);
+		p2.genomes.readFromMS("/tmp/slim_test_roundtrip_MS.txt", m1);
+		if (exists("community")) {
+			community.tick = 3000;
+			sim.cycle = 3000;
+		} else {
+			sim.generation = 3000;
+		}
+		setSeed(seed + 1);
+	}
+	else
+	{
+		if (s == sim.getValue("s"))
+			catn("### " + s + " ###");
+		else
+			catn("### NOT EQUAL ###");
+	}
+}
+

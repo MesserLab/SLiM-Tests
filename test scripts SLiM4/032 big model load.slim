@@ -1,0 +1,28 @@
+// big model load.slim : ^Total mutation frequencies: (.*)$
+//
+// A test script incorporating multiple mutation types
+//
+initialize() {
+	initializeMutationRate(5.8e-7);
+	initializeMutationType("m1", 0.5, "f", 0.0);
+	initializeMutationType("m2", 0.5, "f", 0.01);
+	initializeMutationType("m3", 0.5, "f", -0.01);
+	initializeGenomicElementType("g1", c(m1, m2, m3), c(1.0, 0.01, 1.0));
+	initializeGenomicElement(g1, 0, 1e5-1);
+	initializeRecombinationRate(6.32e-6);
+}
+1 late() {
+	// use a path that works on both of my machines
+	// would be nice to use fileExists(), but it does not yet exist
+	path = "/Users/bch59/Desktop/SLiM test suite LOCAL/bigmixed burnin/burnin_bigmixed_200000_output.txt";
+	x = readFile(path);
+	if (isNULL(x))
+		path = "/Users/bhaller/Documents/Research/MesserLab/SLiM test suite/bigmixed burnin/burnin_bigmixed_200000_output.txt";
+	
+	sim.readFromPopulationFile(path);
+	sim.generation = 200000;
+}
+1: early() {
+	if (sim.generation % 100 == 0) cat(sim.generation + "...\n");
+}
+201000 late() { cat("\nTotal mutation frequencies: " + sum(sim.mutationFrequencies(NULL)) + "\n"); }

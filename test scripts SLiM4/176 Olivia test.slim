@@ -1,0 +1,63 @@
+// Olivia test.slim : ^.*: FIXED (.+)$
+//
+// Test treeseq saving/remembering/reloading, which errors for this model in 4.0
+// I'm not sure why it doesn't error for the other similar test models!
+//
+initialize()
+{
+	initializeMutationRate(0);
+	initializeMutationType("m1", 0.0, "f", 0.0); // introduced mutation
+	initializeGenomicElementType("g1", m1, 1.0);
+	initializeGenomicElement(g1, 0, 99999);
+	initializeRecombinationRate(1e-8);
+	initializeTreeSeq();
+}
+
+1 early()
+{
+	// save this run’s identifier, used to save and restore
+	defineConstant("simID", getSeed());
+	sim.addSubpop("p1", 500);
+	defineGlobal("try", 1);
+}
+
+1000 late()
+{
+	// save the state of the simulation
+	sim.treeSeqOutput(tempdir() + "slim_" + simID + ".trees");
+	
+	// introduce the sweep mutation
+	target = sample(p1.genomes, 1);
+	target.addNewDrawnMutation(m1, 10000);
+}
+
+1000:10000 late()
+{
+	rInd = sample(p1.individuals, 10);
+	sim.treeSeqRememberIndividuals(rInd);
+	if (sim.countOfMutationsOfType(m1) == 0)
+	{
+		fixed = (sum(sim.substitutions.mutationType == m1) == 1);
+		if (fixed)
+		{
+			cat(simID + ": FIXED " + try + "\n");
+			sim.simulationFinished();
+		}
+		else
+		{
+			cat(simID + ": LOST at " + sim.cycle + " - RESTARTING\n");
+			
+			// go back to tick 1000
+			sim.readFromPopulationFile(tempdir() + "slim_" + simID + ".trees");
+			
+			// start a newly seeded run
+			setSeed(rdunif(1, 0, asInteger(2^62) - 1));
+			
+			// re-introduce the sweep mutation
+			target = sample(p1.genomes, 1);
+			target.addNewDrawnMutation(m1, 10000);
+			
+			defineGlobal("try", try + 1);
+		}
+	}
+}

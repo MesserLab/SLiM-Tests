@@ -1,0 +1,38 @@
+// survival bias A.slim : ^### (.+) ###$
+//
+// Test survival() callbacks with T/F/NULL returns
+// This version is sexual (autosomal)
+//
+initialize() {
+	initializeSLiMModelType("nonWF");
+	initializeSex("A");
+	defineConstant("K", 500);   // carrying capacity
+	initializeMutationType("m1", 0.5, "f", 0.0);
+	m1.convertToSubstitution = T;
+	
+	initializeGenomicElementType("g1", m1, 1.0);
+	initializeGenomicElement(g1, 0, 99999);
+	initializeMutationRate(1e-7);
+	initializeRecombinationRate(1e-8);
+}
+reproduction(NULL, "F") {
+	subpop.addCrossed(individual, subpop.sampleIndividuals(1, sex="M"));
+	subpop.addCrossed(individual, subpop.sampleIndividuals(1, sex="M"));
+}
+1 early() {
+	sim.addSubpop("p1", K);
+}
+early() {
+	p1.fitnessScaling = K / p1.individualCount;
+}
+survival() {
+	if (!surviving)
+		return (runif(1) < 0.2);    // 20% chance of surviving despite fitness
+	return NULL;
+}
+late() {
+	sim.setValue("sizes", c(sim.getValue("sizes"), p1.individualCount));
+}
+10000 late() {
+	catn("### " + format("%.4f", mean(sim.getValue("sizes"))) + " ###");
+}
