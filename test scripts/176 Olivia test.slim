@@ -27,7 +27,7 @@ initialize()
 	sim.treeSeqOutput(tempdir() + "slim_" + simID + ".trees");
 	
 	// introduce the sweep mutation
-	target = sample(p1.genomes, 1);
+	target = sample(p1.haplosomes, 1);
 	target.addNewDrawnMutation(m1, 10000);
 }
 
@@ -54,7 +54,7 @@ initialize()
 			setSeed(rdunif(1, 0, asInteger(2^62) - 1));
 			
 			// re-introduce the sweep mutation
-			target = sample(p1.genomes, 1);
+			target = sample(p1.haplosomes, 1);
 			target.addNewDrawnMutation(m1, 10000);
 			
 			defineGlobal("try", try + 1);

@@ -52,7 +52,7 @@ initialize() {
 	if (isNULL(version(F)))
 	{
 		// don't rely on vectorized addNewDrawnMutation()...
-		g = p1.genomes;
+		g = p1.haplosomes;
 		
 		for (pos in 0:(C-1))
 			g.addNewDrawnMutation(mutTypes[pos], pos);
@@ -60,7 +60,7 @@ initialize() {
 	else
 	{
 		// use vectorized addNewDrawnMutation(), so this will only run on recent SLiMs
-		p1.genomes.addNewDrawnMutation(mutTypes, 0:(C-1));
+		p1.haplosomes.addNewDrawnMutation(mutTypes, 0:(C-1));
 	}
 	
 	cat("Initial nucleotide sequence:");
@@ -79,7 +79,7 @@ initialize() {
 	
 	if (size(newMuts))
 	{
-		genomes = sim.subpopulations.genomes;
+		genomes = sim.subpopulations.haplosomes;
 		oldMuts = allMuts[!isNew];
 		oldMutsPositions = oldMuts.position;
 		newMutsPositions = newMuts.position;

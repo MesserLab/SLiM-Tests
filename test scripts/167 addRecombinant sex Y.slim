@@ -21,9 +21,9 @@ reproduction(NULL, "F") {
 	mate = subpop.sampleIndividuals(1, sex="M");
 	breaks1 = sim.chromosome.drawBreakpoints(individual);
 	if (runif(1) <= 0.5)
-		subpop.addRecombinant(NULL, NULL, NULL, NULL, NULL, NULL, "F");
+		subpop.addRecombinant(NULL, NULL, NULL, NULL, NULL, NULL, "F", randomizeStrands=F);
 	else
-		subpop.addRecombinant(NULL, NULL, NULL, mate.genome2, NULL, NULL, "M");
+		subpop.addRecombinant(NULL, NULL, NULL, mate.haploidGenome2, NULL, NULL, "M", randomizeStrands=F);
 }
 1 early() {
 	sim.addSubpop("p1", 50);

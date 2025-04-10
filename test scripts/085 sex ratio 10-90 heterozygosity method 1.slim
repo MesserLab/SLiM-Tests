@@ -24,7 +24,7 @@ initialize() {
 	
 	for (individual in sampledIndividuals)
 	{
-		genomes = individual.genomes;
+		genomes = individual.haplosomes;
 		muts1 = genomes[0].mutations;
 		muts2 = genomes[1].mutations;
 		shared_count = sum(match(muts1, muts2) >= 0);

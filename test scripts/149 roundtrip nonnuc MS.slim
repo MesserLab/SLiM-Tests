@@ -27,7 +27,7 @@ initialize() {
 }
 3000 late() {
 	catn("SAVING...");
-	p1.genomes.outputMS("/tmp/slim_test_roundtrip_MS.txt");
+	p1.haplosomes.outputHaplosomesToMS("/tmp/slim_test_roundtrip_MS.txt");
 	setSeed(seed + 1);
 }
 5000 late() {
@@ -40,7 +40,7 @@ initialize() {
 		sim.addSubpop("p2", 300);
 		sim.setValue("s", s);
 		sim.setValue("iter", 1);
-		p2.genomes.readFromMS("/tmp/slim_test_roundtrip_MS.txt", m1);
+		p2.haplosomes.readHaplosomesFromMS("/tmp/slim_test_roundtrip_MS.txt", m1);
 		if (exists("community")) {
 			community.tick = 3000;
 			sim.cycle = 3000;

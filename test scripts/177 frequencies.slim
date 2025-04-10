@@ -28,16 +28,16 @@ initialize()
 	f1_2 = sim.mutationFrequencies(p1, m);
 	f2_2 = sim.mutationFrequencies(p2, m);
 	f3_2 = sim.mutationFrequencies(c(p1,p2), m);
-	f1_3 = p1.genomes.mutationFrequenciesInGenomes();
-	f2_3 = p2.genomes.mutationFrequenciesInGenomes();
-	f3_3 = ((p1.genomes.mutationFrequenciesInGenomes() * 1000) + (p2.genomes.mutationFrequenciesInGenomes() * 1000)) / 2000;
-	f1_4 = p1.genomes.mutationFrequenciesInGenomes(m);
-	f2_4 = p2.genomes.mutationFrequenciesInGenomes(m);
-	f3_4 = ((p1.genomes.mutationFrequenciesInGenomes(m) * 1000) + (p2.genomes.mutationFrequenciesInGenomes(m) * 1000)) / 2000;
+	f1_3 = p1.haplosomes.mutationFrequenciesInHaplosomes();
+	f2_3 = p2.haplosomes.mutationFrequenciesInHaplosomes();
+	f3_3 = ((p1.haplosomes.mutationFrequenciesInHaplosomes() * 1000) + (p2.haplosomes.mutationFrequenciesInHaplosomes() * 1000)) / 2000;
+	f1_4 = p1.haplosomes.mutationFrequenciesInHaplosomes(m);
+	f2_4 = p2.haplosomes.mutationFrequenciesInHaplosomes(m);
+	f3_4 = ((p1.haplosomes.mutationFrequenciesInHaplosomes(m) * 1000) + (p2.haplosomes.mutationFrequenciesInHaplosomes(m) * 1000)) / 2000;
 	
-	s = sample(sim.subpopulations.genomes, 500, replace=F);
-	f4_1 = s.mutationFrequenciesInGenomes();
-	f4_2 = s.mutationFrequenciesInGenomes(m);
+	s = sample(sim.subpopulations.haplosomes, 500, replace=F);
+	f4_1 = s.mutationFrequenciesInHaplosomes();
+	f4_2 = s.mutationFrequenciesInHaplosomes(m);
 	
 	if (any(f1_1 != f1_2) | any(f1_1 != f1_3) | any(f1_1 != f1_4)) stop();
 	if (any(f2_1 != f2_2) | any(f2_1 != f2_3) | any(f2_1 != f2_4)) stop();

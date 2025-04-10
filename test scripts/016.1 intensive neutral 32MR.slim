@@ -3,7 +3,7 @@
 // A test script with a longer vanilla neutral simulation
 //
 initialize() {
-	initializeSLiMOptions(mutationRuns=32);
+	initializeChromosome(1, 1e5, mutationRuns=32);
 	initializeMutationRate(1e-5);
 	initializeMutationType("m1", 0.5, "f", 0.0);
 	initializeGenomicElementType("g1", m1, 1.0);

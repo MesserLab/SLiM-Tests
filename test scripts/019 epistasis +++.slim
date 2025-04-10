@@ -22,17 +22,17 @@ initialize() {
 1 early() { sim.addSubpop("p1", 1000); }
 // we use callbacks for both mutation types in this test to make the model's runtime symmetric
 mutationEffect(m2) {
-	if (individual.genome1.countOfMutationsOfType(m3))
+	if (individual.haploidGenome1.countOfMutationsOfType(m3))
 		return 0.5;
-	else if (individual.genome2.countOfMutationsOfType(m3))
+	else if (individual.haploidGenome2.countOfMutationsOfType(m3))
 		return 0.5;
 	else
 		return effect;
 }
 mutationEffect(m3) {
-	if (individual.genome1.countOfMutationsOfType(m2))
+	if (individual.haploidGenome1.countOfMutationsOfType(m2))
 		return 0.5;
-	else if (individual.genome2.countOfMutationsOfType(m2))
+	else if (individual.haploidGenome2.countOfMutationsOfType(m2))
 		return 0.5;
 	else
 		return effect;

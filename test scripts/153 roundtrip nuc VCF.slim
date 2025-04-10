@@ -29,8 +29,8 @@ initialize() {
 3000 late() {
 	catn("SAVING...");
 	writeFile("/tmp/slim_VCF_nuc_FASTA.out", sim.chromosome.ancestralNucleotides());
-	p1.genomes.outputVCF("/tmp/slim_VCF_nuc.out");
-	p1.genomes.outputVCF("/tmp/slim_VCF_nuc_simple.out", simplifyNucleotides=T);
+	p1.haplosomes.outputHaplosomesToVCF("/tmp/slim_VCF_nuc.out");
+	p1.haplosomes.outputHaplosomesToVCF("/tmp/slim_VCF_nuc_simple.out", simplifyNucleotides=T);
 	setSeed(seed + 1);
 }
 5000 late() {
@@ -44,7 +44,7 @@ initialize() {
 		sim.setValue("s", s);
 		sim.setValue("iter", 1);
 		sim.chromosome.setAncestralNucleotides("/tmp/slim_VCF_nuc_FASTA.out");
-		p2.genomes.readFromVCF("/tmp/slim_VCF_nuc.out", m1);
+		p2.haplosomes.readHaplosomesFromVCF("/tmp/slim_VCF_nuc.out", m1);
 		if (exists("community")) {
 			community.tick = 3000;
 			sim.cycle = 3000;

@@ -29,12 +29,12 @@ reproduction() {
 		if (breaks[0] > breaks[1])
 			breaks = c(0, breaks[1], breaks[0]);
 		
-		subpop.addRecombinant(individual.genome1, HGTsource, breaks, NULL, NULL, NULL);
+		subpop.addRecombinant(individual.genome1, HGTsource, breaks, NULL, NULL, NULL, randomizeStrands=F);
 	}
 	else
 	{
 		// no horizontal gene transfer; clonal replication
-		subpop.addRecombinant(individual.genome1, NULL, NULL, NULL, NULL, NULL);
+		subpop.addRecombinant(individual.genome1, NULL, NULL, NULL, NULL, NULL, randomizeStrands=F);
 	}
 }
 1 early() {

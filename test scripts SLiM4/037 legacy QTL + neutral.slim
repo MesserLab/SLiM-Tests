@@ -74,7 +74,7 @@ initialize() {
 	// construct phenotypes for the additive effects of QTLs
 	inds = sim.subpopulations.individuals;
 	
-	if (isNULL(version()))  // backward compatibility
+	if (isNULL(version(F)))  // backward compatibility
 		inds.tag = apply(inds, "asInteger(sum(applyValue.genomes.mutationsOfType(m2).selectionCoeff));");
 	else
 		inds.tag = sapply(inds, "asInteger(sum(applyValue.genomes.mutationsOfType(m2).selectionCoeff));");

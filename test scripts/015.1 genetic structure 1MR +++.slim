@@ -3,9 +3,6 @@
 // A test script using a complex chromosome with different genomic element types
 //
 initialize() {
-	initializeSLiMOptions(mutationRuns=1);
-	initializeMutationRate(1e-6);
-	
 	initializeMutationType("m1", 0.5, "f", 0.0);         // non-coding
 	initializeMutationType("m2", 0.5, "f", 0.0);         // synonymous
 	initializeMutationType("m3", 0.1, "g", -0.03, 0.2);  // deleterious
@@ -14,6 +11,9 @@ initialize() {
 	initializeGenomicElementType("g1", c(m2,m3,m4), c(2,8,0.1));  // exon
 	initializeGenomicElementType("g2", c(m1,m3), c(9,1));       // intron
 	initializeGenomicElementType("g3", c(m1), 1);           // non-coding
+	
+	initializeChromosome(1, mutationRuns=1);
+	initializeMutationRate(1e-6);
 	
 	// Generate random genes along an approximately 100000-base chromosome
 	base = 0;

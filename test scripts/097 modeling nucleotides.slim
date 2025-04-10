@@ -47,7 +47,7 @@ initialize() {
 		mutTypes = sapply(geTypes, "sample(applyValue.mutationTypes, 1, weights=applyValue.mutationFractions);");
 	
 	// don't rely on vectorized addNewDrawnMutation()...
-	g = p1.genomes;
+	g = p1.haplosomes;
 	
 	for (pos in 0:(C-1))
 		g.addNewDrawnMutation(mutTypes[pos], pos);
@@ -68,7 +68,7 @@ initialize() {
 	
 	if (size(newMuts))
 	{
-		genomes = sim.subpopulations.genomes;
+		genomes = sim.subpopulations.haplosomes;
 		
 		oldMuts = allMuts[!isNew];
 		oldMutsPositions = oldMuts.position;

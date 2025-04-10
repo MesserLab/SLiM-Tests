@@ -57,7 +57,7 @@ initialize() {
 1 late() {
 	// optional: give m2 mutations to everyone, as standing variation
 	// if this is commented out, QTLs effectively start as 0
-	g = sim.subpopulations.genomes;
+	g = sim.subpopulations.haplosomes;
 	n = size(g);
 	
 	for (q in Q)
@@ -68,16 +68,16 @@ initialize() {
 	}
 	
 	// give marker mutation to everyone
-	sim.subpopulations.individuals.genomes.addNewDrawnMutation(m3, 0);
+	sim.subpopulations.individuals.haplosomes.addNewDrawnMutation(m3, 0);
 }
 1: late() {
 	// construct phenotypes for the additive effects of QTLs
 	inds = sim.subpopulations.individuals;
 	
-	if (isNULL(version()))  // backward compatibility
-		inds.tag = apply(inds, "asInteger(sum(applyValue.genomes.mutationsOfType(m2).selectionCoeff));");
+	if (isNULL(version(F)))  // backward compatibility
+		inds.tag = apply(inds, "asInteger(sum(applyValue.haplosomes.mutationsOfType(m2).selectionCoeff));");
 	else
-		inds.tag = sapply(inds, "asInteger(sum(applyValue.genomes.mutationsOfType(m2).selectionCoeff));");
+		inds.tag = sapply(inds, "asInteger(sum(applyValue.haplosomes.mutationsOfType(m2).selectionCoeff));");
 }
 mutationEffect(m2) {
 	// the QTLs themselves are neutral; their effect is handled below

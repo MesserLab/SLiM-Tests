@@ -20,7 +20,7 @@ initialize() {
 		sim.subpopulations[i-1].setMigrationRates(i+1, 0.2);
 }
 100 late() {
-	target = sample(p1.genomes, 250);
+	target = sample(p1.haplosomes, 250);
 	
 	// use old mutation addition formula for backward compatibility
 	mut = target[0].addNewDrawnMutation(m2, 10000);

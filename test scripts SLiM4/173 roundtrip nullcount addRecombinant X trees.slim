@@ -29,10 +29,10 @@ reproduction() {
 	breaks1 = sim.chromosome.drawBreakpoints(individual);
 	if (runif(1) <= 0.5)
 		subpop.addRecombinant(individual.genome1, individual.genome2, breaks1,
-		mate.genome1, NULL, NULL).tag = FEMALE;
+		mate.genome1, NULL, NULL, randomizeStrands=T).tag = FEMALE;
 	else
 		subpop.addRecombinant(individual.genome1, individual.genome2, breaks1,
-		NULL, NULL, NULL).tag = MALE;
+		NULL, NULL, NULL, randomizeStrands=T).tag = MALE;
 }
 1 early() {
 	sim.addSubpop("p1", 50);    // all diploid in 1st gen, doesn't matter

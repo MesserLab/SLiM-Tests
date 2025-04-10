@@ -22,7 +22,7 @@ reproduction(NULL, "F") {
 	breaks1 = sim.chromosome.drawBreakpoints(individual);
 	breaks2 = sim.chromosome.drawBreakpoints(mate);
 	subpop.addRecombinant(individual.genome1, individual.genome2, breaks1,
-		mate.genome1, mate.genome2, breaks2);
+		mate.genome1, mate.genome2, breaks2, randomizeStrands=T);
 }
 1 early() {
 	sim.addSubpop("p1", 50);

@@ -6,12 +6,12 @@
 initialize() {
 	defineConstant("seed", getSeed());
 	initializeTreeSeq(simplificationInterval=250);
+	initializeSex("X");
 	initializeMutationRate(1e-7);
 	initializeMutationType("m1", 0.5, "f", 0.0);
 	initializeGenomicElementType("g1", m1, 1.0);
 	initializeGenomicElement(g1, 0, 99999);
 	initializeRecombinationRate(1e-8);
-	initializeSex("X");
 }
 1 early() {
 	sim.addSubpop("p1", 500);
@@ -19,7 +19,7 @@ initialize() {
 }
 2000 late() {
 	catn("SAVING...");
-	defineConstant("countNull1", sum(sim.subpopulations.genomes.isNullGenome));
+	defineConstant("countNull1", sum(sim.subpopulations.haplosomes.isNullHaplosome));
 	catn(countNull1 + " null genomes at save...");
 	sim.treeSeqOutput("/tmp/slim_test_roundtrip.trees");
 	setSeed(seed + 1);
@@ -33,7 +33,7 @@ initialize() {
 		sim.setValue("s", s);
 		sim.setValue("iter", 1);
 		sim.readFromPopulationFile("/tmp/slim_test_roundtrip.trees");
-		defineConstant("countNull2", sum(sim.subpopulations.genomes.isNullGenome));
+		defineConstant("countNull2", sum(sim.subpopulations.haplosomes.isNullHaplosome));
 		catn(countNull2 + " null genomes at restart...");
 		setSeed(seed + 1);
 	}

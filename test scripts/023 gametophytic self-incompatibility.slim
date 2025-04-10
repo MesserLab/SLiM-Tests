@@ -15,9 +15,9 @@ initialize() {
 }
 1 early() { sim.addSubpop("p1", 500); }
 modifyChild(p1) {
-	pollenSMuts = child.genome2.mutationsOfType(m2);
-	styleSMuts1 = parent1.genome1.mutationsOfType(m2);
-	styleSMuts2 = parent1.genome2.mutationsOfType(m2);
+	pollenSMuts = child.haploidGenome2.mutationsOfType(m2);
+	styleSMuts1 = parent1.haploidGenome1.mutationsOfType(m2);
+	styleSMuts2 = parent1.haploidGenome2.mutationsOfType(m2);
 	if (identical(pollenSMuts, styleSMuts1))
 		if (runif(1) < 0.95)
 			return F;

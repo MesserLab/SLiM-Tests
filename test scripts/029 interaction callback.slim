@@ -27,9 +27,9 @@ initialize() {
 	inds = sim.subpopulations.individuals;
 	
 	if (isNULL(version(F)))  // backward compatibility
-		inds.tagF = apply(inds, "sum(applyValue.genomes.mutationsOfType(m2).selectionCoeff);");
+		inds.tagF = apply(inds, "sum(applyValue.haplosomes.mutationsOfType(m2).selectionCoeff);");
 	else
-		inds.tagF = sapply(inds, "sum(applyValue.genomes.mutationsOfType(m2).selectionCoeff);");
+		inds.tagF = sapply(inds, "sum(applyValue.haplosomes.mutationsOfType(m2).selectionCoeff);");
 	
 	// evaluate interactions
 	i1.evaluate(sim.subpopulations);

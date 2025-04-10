@@ -19,8 +19,8 @@ initialize() {
 1:249 late()
 {
 	muts = sim.mutations;
-	gens = sim.subpopulations.genomes;
-	gens = gens[!gens.isNullGenome];
+	gens = sim.subpopulations.haplosomes;
+	gens = gens[!gens.isNullHaplosome];
 	
 	mutSampleSize = rdunif(1, min=0, max=muts.size());
 	mutSample = sample(muts, mutSampleSize, replace=F);

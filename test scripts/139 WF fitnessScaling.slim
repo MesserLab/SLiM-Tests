@@ -22,7 +22,7 @@ initialize() {
 	s.fitnessScaling = 0.1;
 	
 	for (ind in s)
-		if (sum(ind.genomes.countOfMutationsOfType(m1)) > 0)
+		if (sum(ind.haplosomes.countOfMutationsOfType(m1)) > 0)
 			ind.fitnessScaling = 1.0;
 }
 20000 late() { cat("\nTotal fixed mutations: " + sim.substitutions.size() + "\n"); }

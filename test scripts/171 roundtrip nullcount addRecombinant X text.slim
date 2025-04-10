@@ -27,11 +27,11 @@ reproduction() {
 	mate = subpop.sampleIndividuals(1, tag=MALE);
 	breaks1 = sim.chromosome.drawBreakpoints(individual);
 	if (runif(1) <= 0.5)
-		subpop.addRecombinant(individual.genome1, individual.genome2, breaks1,
-		mate.genome1, NULL, NULL).tag = FEMALE;
+		subpop.addRecombinant(individual.haploidGenome1, individual.haploidGenome2, breaks1,
+		mate.haploidGenome1, NULL, NULL, randomizeStrands=T).tag = FEMALE;
 	else
-		subpop.addRecombinant(individual.genome1, individual.genome2, breaks1,
-		NULL, NULL, NULL).tag = MALE;
+		subpop.addRecombinant(individual.haploidGenome1, individual.haploidGenome2, breaks1,
+		NULL, NULL, NULL, randomizeStrands=T).tag = MALE;
 }
 1 early() {
 	sim.addSubpop("p1", 50);    // all diploid in 1st gen, doesn't matter
@@ -43,7 +43,7 @@ early() {
 }
 2000 late() {
 	catn("SAVING...");
-	defineConstant("countNull1", sum(sim.subpopulations.genomes.isNullGenome));
+	defineConstant("countNull1", sum(sim.subpopulations.haplosomes.isNullHaplosome));
 	catn(countNull1 + " null genomes at save...");
 	sim.outputFull("/tmp/slim_test_roundtrip.out", binary=F);
 	setSeed(seed + 1);
@@ -57,10 +57,10 @@ early() {
 		sim.setValue("s", s);
 		sim.setValue("iter", 1);
 		sim.readFromPopulationFile("/tmp/slim_test_roundtrip.out");
-		defineConstant("countNull2", sum(sim.subpopulations.genomes.isNullGenome));
+		defineConstant("countNull2", sum(sim.subpopulations.haplosomes.isNullHaplosome));
 		catn(countNull2 + " null genomes at restart...");
 		inds = sim.subpopulations.individuals;
-		inds.tag = ifelse(inds.genome2.isNullGenome, MALE, FEMALE);
+		inds.tag = ifelse(inds.haploidGenome2.isNullHaplosome, MALE, FEMALE);
 		setSeed(seed + 1);
 	}
 	else

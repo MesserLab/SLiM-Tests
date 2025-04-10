@@ -10,7 +10,7 @@ initialize() {
 	initializeRecombinationRate(1e-7);
 	
 	// try to accommodate both old and new SLiM versions
-	v = version();
+	v = version(F);
 	if (isNULL(v))
 		initializeGeneConversion(0.2, 25);
 	else if (v[1] < 3.3)

@@ -14,7 +14,7 @@ initialize() {
 	initializeRecombinationRate(1e-8);
 }
 reproduction() {
-	subpop.addRecombinant(individual.genome1, NULL, NULL, NULL, NULL, NULL);
+	subpop.addRecombinant(individual.genome1, NULL, NULL, NULL, NULL, NULL, randomizeStrands=F);
 }
 1 early() {
 	if (version(F)[1] > 3.6999)

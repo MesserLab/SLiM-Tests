@@ -25,13 +25,13 @@ initialize() {
 
 late() {
 	// remove any new mutations added to the disabled diploid genomes
-	sim.subpopulations.individuals.genome2.removeMutations();
+	sim.subpopulations.individuals.haploidGenome2.removeMutations();
 	
 	// remove mutations in the haploid genomes that have fixed
 	muts = sim.mutations;
 	freqs = sim.mutationFrequencies(NULL, muts);
 	if (any(freqs == 0.5))
-		sim.subpopulations.genomes.removeMutations(muts[freqs == 0.5], T);
+		sim.subpopulations.haplosomes.removeMutations(muts[freqs == 0.5], T);
 }
 
 5001: mutation(m1) {
