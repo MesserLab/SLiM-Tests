@@ -51,6 +51,10 @@ versions
 # the change in behavior for nearestNeighbors() for thread-safety caused a reproducibility discontinuity for
 # tests 119, 121, 123, 127, 129, and 131 because they depend upon the order in which the neighbors are returned.
 
+# test models 006, 108, 113, 122, and 123 show a discontinuity from SLiM 4.3 to 5.0.  This is because models
+# using initializeSex("Y") run differently; SLiM 5.0 understands the null haplosome for chromosome type "-Y"
+# better than 4.3 did, avoids some RNG usage as a result, and thus diverges.  This is fine.
+
 
 # Select a subset of versions for testing; unless you're interested in historical comparisons,
 # the last four versions generally suffices to establish discontinuities
