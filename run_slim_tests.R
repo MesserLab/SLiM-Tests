@@ -103,6 +103,7 @@ actually_run_test <- function(test_name, test_versions, replicates=1, force_run=
 	testfile <- paste0(tests_path, test_name, ".slim")
 	testfile_compat3 <- paste0(tests_path_compat3, test_name, ".slim")	# SLiM 2/3 compatibility
 	testfile_compat4 <- paste0(tests_path_compat4, test_name, ".slim")	# SLiM 4 compatibility
+	testfile_compat5 <- paste0(tests_path_compat5, test_name, ".slim")	# SLiM 5 compatibility
 	
 	if (!file.exists(testfile))
 		return
@@ -114,9 +115,7 @@ actually_run_test <- function(test_name, test_versions, replicates=1, force_run=
 			if (!file.exists(testfile))
 				break
 			
-			# some changes in SLiM 4 are basically impossible to code around for backward compatibility, so
-			# we have alternate versions of some scripts for SLiM 4 and earlier, kept in tests_path_compat3/4
-			# here we decide which path to use for this particular run
+			# we have alternate versions of some scripts for SLiM 5 and earlier
 			scriptpath <- testfile
 			if (startsWith(version, "slim2") | startsWith(version, "slim3"))
 			{
@@ -127,6 +126,11 @@ actually_run_test <- function(test_name, test_versions, replicates=1, force_run=
 			{
 				if (file.exists(testfile_compat4))
 					scriptpath <- testfile_compat4
+			}
+			else if (startsWith(version, "slim5"))
+			{
+				if (file.exists(testfile_compat5))
+					scriptpath <- testfile_compat5
 			}
 			
 			versionfolder <- paste0(versions_path, version, "/")
@@ -425,6 +429,7 @@ run_test <- function(test_name, test_versions, replicates=1, force_run=FALSE, pr
 tests_path <- path.expand(paste0(versions_path, "test scripts/"))
 tests_path_compat3 <- path.expand(paste0(versions_path, "test scripts SLiM3/"))	# backward compatibility for SLiM 2/3
 tests_path_compat4 <- path.expand(paste0(versions_path, "test scripts SLiM4/"))	# backward compatibility for SLiM 4
+tests_path_compat5 <- path.expand(paste0(versions_path, "test scripts SLiM5/"))	# backward compatibility for SLiM 5
 tests <- list.files(tests_path, "*.slim")
 tests <- gsub("^(.*)\\.slim$", "\\1", tests)	# strip off .slim extensions
 tests

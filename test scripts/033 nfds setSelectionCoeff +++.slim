@@ -14,6 +14,6 @@ initialize() {
 1: late() {
 	m2muts = sim.mutationsOfType(m2);
 	for (mut in m2muts)
-		mut.setSelectionCoeff(0.5 - sim.mutationFrequencies(p1, mut));
+		mut.setEffectSizeForTrait(NULL, 0.5 - sim.mutationFrequencies(p1, mut));
 }
 20000 late() { cat("\nTotal mutation frequencies: " + sum(sim.mutationFrequencies(NULL)) + "\n"); }

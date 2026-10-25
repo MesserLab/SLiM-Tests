@@ -20,7 +20,7 @@ initialize() {
 	// remember the mutations segregating at generation 5000 forever
 	defineConstant("MUT", sim.mutations);
 	MUT.setMutationType(m2);
-	MUT.setSelectionCoeff(0.1);
+	MUT.setEffectSizeForTrait(NULL, 0.1);
 }
 
 5001: mutation(m1) {
